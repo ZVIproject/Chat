@@ -24,12 +24,13 @@ public class Message implements Serializable {
 
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "sender")
 	private User sender;
 
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name = "id")
+
+	@JoinColumn(name = "receiver")
 	private User receiver;
 
 	public User getSender() {
