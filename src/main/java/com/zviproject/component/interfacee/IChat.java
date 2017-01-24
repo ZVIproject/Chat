@@ -2,6 +2,8 @@ package com.zviproject.component.interfacee;
 
 import java.util.Collection;
 
+import org.hibernate.criterion.DetachedCriteria;
+
 import com.zviproject.component.entity.Message;
 
 public interface IChat {
@@ -12,7 +14,7 @@ public interface IChat {
 	 * @param name2
 	 * @return Collection<Message>
 	 */
-	public Collection<Message> sendMessage(String name1, String name2);
+	public Collection<Message> sendMessage(String name1, String name2, DetachedCriteria dc);
 
 	/**
 	 * Get information about correspondence between users in pages Every page
