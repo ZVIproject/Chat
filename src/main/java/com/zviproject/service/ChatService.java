@@ -21,9 +21,9 @@ public class ChatService {
 	 * @param name2
 	 * @return Collection<Message>
 	 */
-	public Collection<Message> sendMessage(String name1, String name2, DetachedCriteria dc) {
+	public Collection<Message> sendMessage(String name1, String name2, DetachedCriteria dc, String text) {
 
-		return iChat.sendMessage(name1, name2, dc);
+		return iChat.sendMessage(name1, name2, dc, text);
 	}
 
 	/**

@@ -1,29 +1,33 @@
 package com.zviproject.component.Util;
 
+import javax.annotation.PostConstruct;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+/**
+ * Working with session for access to db
+ */
+@Component
+@Scope("application")
 public class HibernateUtil {
 
-	private static final SessionFactory sessionFactory = buildSessionFactory();
+	private SessionFactory sessionFactory;
 
-	private static SessionFactory buildSessionFactory() {
-		try {
-			// Create the SessionFactory from hibernate.cfg.xml
-			return new Configuration().configure().buildSessionFactory();
-		} catch (Throwable ex) {
-			// Make sure you log the exception, as it might be swallowed
-			System.err.println("Initial SessionFactory creation failed." + ex);
-			throw new ExceptionInInitializerError(ex);
-		}
+	@PostConstruct
+	private void buildSessionFactory() {
+		System.out.println("=========================================================== buildSessionFactory was started ===========================================================");
+		sessionFactory = new Configuration().configure().buildSessionFactory();
+
 	}
 
-	public static SessionFactory getSessionFactory() {
+	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
-	public static void shutdown() {
-		// Close caches and connection pools
+	public void shutdown() {
 		getSessionFactory().close();
 	}
 

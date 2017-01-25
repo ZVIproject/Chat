@@ -1,7 +1,7 @@
 package com.zviproject.component.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,6 +22,10 @@ public class Message implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	private Date time;
+
+	private String text;
+
 	@ManyToOne
 	@JsonBackReference
 	@JoinColumn(name = "sender")
@@ -29,7 +33,6 @@ public class Message implements Serializable {
 
 	@ManyToOne
 	@JsonBackReference
-
 	@JoinColumn(name = "receiver")
 	private User receiver;
 
@@ -48,13 +51,6 @@ public class Message implements Serializable {
 	public void setReceiver(User receiver) {
 		this.receiver = receiver;
 	}
-
-	// private Integer sender;
-	// private Integer receiver;
-	// Maybe will be update (type in DB - DateTime)
-	private Date time;
-	// Maybe will be update (type in DB - Text )
-	private String text;
 
 	public Integer getId() {
 		return id;

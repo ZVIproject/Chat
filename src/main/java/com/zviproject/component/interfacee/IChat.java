@@ -14,7 +14,7 @@ public interface IChat {
 	 * @param name2
 	 * @return Collection<Message>
 	 */
-	public Collection<Message> sendMessage(String name1, String name2, DetachedCriteria dc);
+	public Collection<Message> sendMessage(String name1, String name2, DetachedCriteria dc, String text);
 
 	/**
 	 * Get information about correspondence between users in pages Every page
