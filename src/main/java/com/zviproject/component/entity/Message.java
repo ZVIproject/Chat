@@ -7,11 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "Messages")
@@ -26,31 +22,9 @@ public class Message implements Serializable {
 
 	private String text;
 
-	@ManyToOne
-	@JsonBackReference
-	@JoinColumn(name = "sender")
-	private User sender;
+	private int sender;
 
-	@ManyToOne
-	@JsonBackReference
-	@JoinColumn(name = "receiver")
-	private User receiver;
-
-	public User getSender() {
-		return sender;
-	}
-
-	public void setSender(User sender) {
-		this.sender = sender;
-	}
-
-	public User getReceiver() {
-		return receiver;
-	}
-
-	public void setReceiver(User receiver) {
-		this.receiver = receiver;
-	}
+	private int receiver;
 
 	public Integer getId() {
 		return id;
@@ -74,5 +48,21 @@ public class Message implements Serializable {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public int getSender() {
+		return sender;
+	}
+
+	public void setSender(int sender) {
+		this.sender = sender;
+	}
+
+	public int getReceiver() {
+		return receiver;
+	}
+
+	public void setReceiver(int receiver) {
+		this.receiver = receiver;
 	}
 }

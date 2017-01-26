@@ -1,12 +1,12 @@
 package com.zviproject.component.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -23,9 +23,6 @@ public class ChatDao implements IChat {
 	@Autowired
 	private HibernateUtil hibernateUtil;
 
-	public DetachedCriteria searchUser(String userName) {
-		return null;
-	}
 
 	/**
 	 * Method for sending message between users
@@ -38,23 +35,15 @@ public class ChatDao implements IChat {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public Collection<Message> sendMessage(String name1, String name2, DetachedCriteria dc, String text) {
+	public Collection<Message> sendMessage(int sender, int receiver, DetachedCriteria dc, String text) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
-
-		Criteria sender = session.createCriteria(User.class).add(Restrictions.eq("name", name1));
-
-		User userSender = (User) sender.uniqueResult();
-
-		Criteria receiver = session.createCriteria(User.class).add(Restrictions.eq("name", name2));
-
-		User userReceiver = (User) receiver.uniqueResult();
 
 		Date timeMessage = new Date();
 
 		Message message = new Message();
 
-		message.setReceiver(userReceiver);
-		message.setSender(userSender);
+		message.setReceiver(receiver);
+		message.setSender(sender);
 		message.setText(text);
 		message.setTime(timeMessage);
 		session.save(message);
@@ -68,21 +57,42 @@ public class ChatDao implements IChat {
 	}
 
 	/**
-	 * Get information about correspondence between users in pages Every page
-	 * have 10 message
-	 * 
+	 * Get information about correspondence between users in pages 
 	 * @param page
 	 * @return Collection<Message>
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public Collection<Message> getInformation(String name1, String name2, int page) {
-
-		Collection<Message> messages = new ArrayList<>();
-
-		Message message = new Message();
+	public Collection<Message> getInformation(int sender, int receiver, DetachedCriteria dc) {
+		Session session=hibernateUtil.getSessionFactory().openSession();
+		Collection<Message> messages = (Collection<Message>) dc.getExecutableCriteria(session).list();
 
 		return messages;
+	}
+
+	/**
+	 * Register new user in chat<br>
+	 * Return information for user.
+	 * @param user
+	 * @return String
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int registerUser(User user) {
+		Session session = hibernateUtil.getSessionFactory().openSession();
+		session.save(user);
+		Criteria userId=session.createCriteria(User.class.getName())
+				.add(Restrictions.eq("name", user.getName()))
+				.setProjection(Projections.property("id"));
+		
+		int id=(int) userId.uniqueResult();
+		
+		if (session.isOpen()) {
+			session.close();
+		}
+		
+		return id;
+
 	}
 
 }

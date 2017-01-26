@@ -2,9 +2,9 @@ package com.zviproject.controller;
 
 import java.util.Collection;
 
+
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zviproject.component.entity.Message;
+import com.zviproject.component.entity.User;
 import com.zviproject.service.ChatService;
 
 @Configuration
@@ -30,48 +31,59 @@ public class ChatController {
 	 * 
 	 * @param name1
 	 * @param name2
-	 * @return
+	 * @return DetachedCriteria
 	 */
-	public DetachedCriteria createDetachedCriteria(String name1, String name2) {
+	public DetachedCriteria createDetachedCriteria(int name1, int name2) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Message.class)
-				.createAlias("sender", "send")
-				.createAlias("receiver", "reciv")
-				//.addOrder(Order.asc("time"))
-				.setProjection(Projections.groupProperty("text"))
+				.addOrder(Order.asc("time"))
 				.add(Restrictions.or(
 						Restrictions.and(
-								Restrictions.eq("send.name", name1),
-								Restrictions.eq("reciv.name", name2)), 
+								Restrictions.eq("sender", name1), 
+								Restrictions.eq("receiver", name2)), 
 						Restrictions.and(
-								Restrictions.eq("send.name", name2), 
-								Restrictions.eq("reciv.name", name1))));
+								Restrictions.eq("sender", name2), 
+								Restrictions.eq("receiver", name1))));
 		return detachedCriteria;
 	}
+	
 
 	/**
-	 * Method for sending message between users
+	 * Method for sending messages between users
 	 * 
-	 * @param name1
-	 * @param name2
+	 * @param sender
+	 * @param receiver
 	 * @return Collection<Message>
 	 */
-	@RequestMapping(value = "/{name1}/{name2}", method = RequestMethod.POST)
-	public Collection<Message> sendMessage(@PathVariable("name1") String name1, @PathVariable("name2") String name2, @RequestBody String text) {
-		DetachedCriteria dc = createDetachedCriteria(name1, name2);
-		return chatService.sendMessage(name1, name2, dc, text);
+	@RequestMapping(value = "/{sender}/{receiver}", method = RequestMethod.POST)
+	public Collection<Message> sendMessage(@PathVariable("sender") int sender, @PathVariable("receiver") int receiver, @RequestBody String text) {
+		DetachedCriteria dc = createDetachedCriteria(sender, receiver);
+		return chatService.sendMessage(sender, receiver, dc, text);
 	}
 
 	/**
-	 * Get information about correspondence between users in pages Every page
-	 * have 10 message
+	 * Register new user in chat<br>
+	 * Return information for user.
+	 * @param user
+	 * @return String
+	 */
+	@RequestMapping(value = "/register", consumes = "application/json", method = RequestMethod.POST)
+	public String registerUser(@RequestBody User user) {
+		
+		return "Your id in this chat is ****** "+chatService.registerUser(user)+
+				" ******\n you can send message by using your id and after /(slash) id person that must receive this message";
+		
+	}
+
+	/**
+	 * Get information about correspondence between users in pages 
 	 * 
 	 * @param page
 	 * @return Collection<Message>
 	 */
-	@RequestMapping(value = "/{name1}/{name2}/information/{page}", method = RequestMethod.GET)
-	public Collection<Message> getInformation(@PathVariable("name1") String name1, @PathVariable("name2") String name2, @PathVariable("page") int page) {
-		// DetachedCriteria dc=createDetachedCriteria(name1, name2);
-		return chatService.getInformation(name1, name2, page);
+	@RequestMapping(value = "/{sender}/{receiver}/information", method = RequestMethod.GET)
+	public Collection<Message> getInformation(@PathVariable("sender") int sender, @PathVariable("receiver") int receiver) {
+		DetachedCriteria dc=createDetachedCriteria(sender, receiver);
+		return chatService.getInformation(sender, receiver, dc);
 	}
 
 }

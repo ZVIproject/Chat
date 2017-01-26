@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.hibernate.criterion.DetachedCriteria;
 
 import com.zviproject.component.entity.Message;
+import com.zviproject.component.entity.User;
 
 public interface IChat {
 	/**
@@ -14,7 +15,7 @@ public interface IChat {
 	 * @param name2
 	 * @return Collection<Message>
 	 */
-	public Collection<Message> sendMessage(String name1, String name2, DetachedCriteria dc, String text);
+	public Collection<Message> sendMessage(int sender, int receiver, DetachedCriteria dc, String text);
 
 	/**
 	 * Get information about correspondence between users in pages Every page
@@ -23,6 +24,14 @@ public interface IChat {
 	 * @param page
 	 * @return Collection<Message>
 	 */
-	public Collection<Message> getInformation(String name1, String name2, int page);
+	public Collection<Message> getInformation(int sender, int receiver, DetachedCriteria dc);
+
+	/**
+	 * Register new user in DB
+	 * 
+	 * @param user
+	 * @return int
+	 */
+	public int registerUser(User user);
 
 }
