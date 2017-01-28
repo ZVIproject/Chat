@@ -47,3 +47,4 @@ public interface IChat {
 	public int registerUser(User user);
 
 }
+
