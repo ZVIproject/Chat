@@ -176,7 +176,7 @@ public class ChatDao implements IChat {
 		
 		}
 		
-		return messageToDisplays;
+			return messageToDisplays;
 		
 	}
 
@@ -221,6 +221,8 @@ public class ChatDao implements IChat {
 		Session session=hibernateUtil.getSessionFactory().openSession();
 		
 		Collection<Message> messages=null;
+		
+		
 		
 		if (accessToDB(sender, receiver)) {
 		messages = (List<Message>) dc.getExecutableCriteria(session).list();
