@@ -2,7 +2,6 @@ package com.zviproject.controller;
 
 import java.util.Collection;
 
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zviproject.component.entity.Message;
+import com.zviproject.component.entity.MessageToDisplay;
 import com.zviproject.component.entity.User;
 import com.zviproject.service.ChatService;
 
@@ -25,6 +25,15 @@ public class ChatController {
 
 	@Autowired
 	ChatService chatService;
+
+	/**
+	 * Working with FaceBook API
+	 */
+	// private Facebook facebook;
+	// @Inject
+	// public void FacebookController(Facebook facebook) {
+	//
+	// }
 
 	/**
 	 * Request for return history of message
@@ -45,45 +54,58 @@ public class ChatController {
 								Restrictions.eq("receiver", name1))));
 		return detachedCriteria;
 	}
-	
 
 	/**
 	 * Method for sending messages between users
 	 * 
 	 * @param sender
-	 * @param receiver
-	 * @return Collection<Message>
+	 * @param reciver
+	 * @return int
 	 */
-	@RequestMapping(value = "/{sender}/{receiver}", method = RequestMethod.POST)
-	public Collection<Message> sendMessage(@PathVariable("sender") int sender, @PathVariable("receiver") int receiver, @RequestBody String text) {
-		DetachedCriteria dc = createDetachedCriteria(sender, receiver);
-		return chatService.sendMessage(sender, receiver, dc, text);
+	@RequestMapping(value = "/{sender}/{reciver}", method = RequestMethod.POST)
+	public int sendMessage(@PathVariable("sender") int sender, @PathVariable("reciver") int reciver, @RequestBody String text) {
+		return chatService.sendMessage(sender, reciver, text);
 	}
 
 	/**
 	 * Register new user in chat<br>
 	 * Return information for user.
+	 * 
 	 * @param user
 	 * @return String
 	 */
 	@RequestMapping(value = "/register", consumes = "application/json", method = RequestMethod.POST)
-	public String registerUser(@RequestBody User user) {
-		
-		return "Your id in this chat is ****** "+chatService.registerUser(user)+
-				" ******\n you can send message by using your id and after /(slash) id person that must receive this message";
-		
+	public int registerUser(@RequestBody User user) {
+
+		return chatService.registerUser(user);
+
 	}
 
 	/**
-	 * Get information about correspondence between users in pages 
+	 * Get information about correspondence between users in pages
 	 * 
 	 * @param page
+	 * @return Collection<MessageToDisplay>
+	 */
+	@RequestMapping(value = "/{sender}/{reciver}/information", method = RequestMethod.GET)
+	public Collection<MessageToDisplay> getInformation(@PathVariable("sender") int sender, @PathVariable("reciver") int reciver) {
+		
+		return chatService.getInformation(sender, reciver);
+	}
+	
+	/**
+	 * Get all information about correspondence between users
+	 * 
+	 * @param dc
+	 * @param sender
+	 * @param reciver
 	 * @return Collection<Message>
 	 */
-	@RequestMapping(value = "/{sender}/{receiver}/information", method = RequestMethod.GET)
-	public Collection<Message> getInformation(@PathVariable("sender") int sender, @PathVariable("receiver") int receiver) {
-		DetachedCriteria dc=createDetachedCriteria(sender, receiver);
-		return chatService.getInformation(sender, receiver, dc);
+	@RequestMapping(value = "/{sender}/{reciver}/informationF", method = RequestMethod.GET)
+	public Collection<Message> getFullInformation(@PathVariable("sender") int sender, @PathVariable("reciver")int reciver) {
+		DetachedCriteria dc = createDetachedCriteria(sender, reciver);
+		return chatService.getFullInformation(sender, reciver, dc);
 	}
+
 
 }
