@@ -2,6 +2,8 @@ package com.zviproject.controller;
 
 import java.util.Collection;
 
+
+
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -25,15 +27,7 @@ public class ChatController {
 
 	@Autowired
 	ChatService chatService;
-
-	/**
-	 * Working with FaceBook API
-	 */
-	// private Facebook facebook;
-	// @Inject
-	// public void FacebookController(Facebook facebook) {
-	//
-	// }
+	
 
 	/**
 	 * Request for return history of message

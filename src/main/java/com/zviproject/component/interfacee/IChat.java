@@ -5,9 +5,7 @@ import java.util.Collection;
 import org.hibernate.criterion.DetachedCriteria;
 
 import com.zviproject.component.entity.Message;
-
 import com.zviproject.component.entity.MessageToDisplay;
-
 import com.zviproject.component.entity.User;
 
 public interface IChat {
@@ -28,9 +26,7 @@ public interface IChat {
 	 * @param reciver
 	 * @return Collection<Message>
 	 */
-
 	public Collection<Message> getFullInformation(int sender, int reciver, DetachedCriteria dc);
-
 
 	/**
 	 * Get information about correspondence between users
@@ -40,7 +36,6 @@ public interface IChat {
 	 * @param reciver
 	 * @return Collection<Message>
 	 */
-
 	public Collection<MessageToDisplay> getInformation(int sender, int reciver);
 
 	/**
@@ -52,3 +47,4 @@ public interface IChat {
 	public int registerUser(User user);
 
 }
+
