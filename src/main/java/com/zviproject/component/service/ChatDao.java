@@ -35,6 +35,29 @@ public class ChatDao implements IChat {
 
 	
 
+	/**
+	 * Checking presence name user in a DB<br>
+	 * if user not in a DB then this name can be registered
+	 * @param name
+	 * @return exist
+	 */
+	public boolean registerUser(String name) {
+		boolean exist=false;
+		Session session = hibernateUtil.getSessionFactory().openSession();
+		try {
+			Criteria criteriaUser = session.createCriteria(User.class.getName())
+					.add(Restrictions.eq("name", name))
+					.setProjection(Projections.property("id"));
+			int idUser = (int) criteriaUser.uniqueResult();
+			log.info(String.format("******* The user with this name * %s * in a DB and can not be registered *******", name));
+		}catch (NullPointerException e) {
+			exist=true;
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return exist;
+	}
 	
 	/**
 	 * Checking presence users in DB
@@ -150,11 +173,11 @@ public class ChatDao implements IChat {
 
 		messageToDisplays = (List<MessageToDisplay>) query.list();
 
+		
+		}
+		
 		return messageToDisplays;
-		}
-		else {
-			return messageToDisplays;
-		}
+		
 	}
 
 	/**
@@ -168,6 +191,8 @@ public class ChatDao implements IChat {
 	@Transactional
 	public int registerUser(User user) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
+		boolean accessReg = registerUser(user.getName());
+		if (accessReg) {
 		session.save(user);
 
 		int id = user.getId();
@@ -177,6 +202,8 @@ public class ChatDao implements IChat {
 		}
 		log.info(String.format("New user hes id ****** %d ******", id));
 		return id;
+		}
+		else return 0;
 
 	}
 	
@@ -194,8 +221,6 @@ public class ChatDao implements IChat {
 		Session session=hibernateUtil.getSessionFactory().openSession();
 		
 		Collection<Message> messages=null;
-		
-		
 		
 		if (accessToDB(sender, receiver)) {
 		messages = (List<Message>) dc.getExecutableCriteria(session).list();
