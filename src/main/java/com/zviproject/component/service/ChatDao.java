@@ -204,3 +204,4 @@ public class ChatDao implements IChat {
 	}
 
 }
+
