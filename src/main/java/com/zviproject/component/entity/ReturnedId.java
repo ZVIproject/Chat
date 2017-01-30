@@ -2,6 +2,7 @@ package com.zviproject.component.entity;
 
 public final class ReturnedId {
 	private int id;
+	private String status;
 
 	public int getId() {
 		return id;
@@ -9,5 +10,13 @@ public final class ReturnedId {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }

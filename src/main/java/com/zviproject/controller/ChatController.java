@@ -36,24 +36,24 @@ public class ChatController {
 	 * @return DetachedCriteria
 	 */
 	public DetachedCriteria createDetachedCriteria(int name1, int name2) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Message.class).addOrder(Order.asc("time"))
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Message.class).addOrder(Order.asc("send_time"))
 				.add(Restrictions.or(
-						Restrictions.and(Restrictions.eq("sender", name1), Restrictions.eq("receiver", name2)),
-						Restrictions.and(Restrictions.eq("sender", name2), Restrictions.eq("receiver", name1))));
+						Restrictions.and(Restrictions.eq("id_sender", name1), Restrictions.eq("id_receiver", name2)),
+						Restrictions.and(Restrictions.eq("id_sender", name2), Restrictions.eq("id_receiver", name1))));
 		return detachedCriteria;
 	}
 
 	/**
 	 * Method for sending messages between users
 	 * 
-	 * @param sender
-	 * @param reciver
+	 * @param senderId
+	 * @param receiverId
 	 * @return int
 	 */
-	@RequestMapping(value = "/{sender}/{reciver}", method = RequestMethod.POST)
-	public ReturnedId sendMessage(@PathVariable("sender") int sender, @PathVariable("reciver") int reciver,
-			@RequestBody String text) {
-		return chatService.sendMessage(sender, reciver, text);
+	@RequestMapping(value = "/{senderId}/{receiverId}", method = RequestMethod.POST)
+	public ReturnedId sendMessage(@PathVariable("senderId") int senderId, @PathVariable("receiverId") int receiverId,
+			@RequestBody String login) {
+		return chatService.sendMessage(senderId, receiverId, login);
 	}
 
 	/**
@@ -76,26 +76,26 @@ public class ChatController {
 	 * @param page
 	 * @return Collection<MessageToDisplay>
 	 */
-	@RequestMapping(value = "/{sender}/{reciver}/information", method = RequestMethod.GET)
-	public Collection<MessageToDisplay> getInformation(@PathVariable("sender") int sender,
-			@PathVariable("reciver") int reciver) {
+	@RequestMapping(value = "/{senderId}/{receiverId}/information", method = RequestMethod.GET)
+	public Collection<MessageToDisplay> getInformation(@PathVariable("senderId") int senderId,
+			@PathVariable("receiverId") int receiverId) {
 
-		return chatService.getInformation(sender, reciver);
+		return chatService.getInformation(senderId, receiverId);
 	}
 
 	/**
 	 * Get all information about correspondence between users
 	 * 
 	 * @param dc
-	 * @param sender
-	 * @param reciver
+	 * @param senderId
+	 * @param receiverId
 	 * @return Collection<Message>
 	 */
-	@RequestMapping(value = "/{sender}/{reciver}/informationFull", method = RequestMethod.GET)
-	public Collection<Message> getFullInformation(@PathVariable("sender") int sender,
-			@PathVariable("reciver") int reciver) {
-		DetachedCriteria dc = createDetachedCriteria(sender, reciver);
-		return chatService.getFullInformation(sender, reciver, dc);
+	@RequestMapping(value = "/{senderId}/{receiverId}/informationFull", method = RequestMethod.GET)
+	public Collection<Message> getFullInformation(@PathVariable("senderId") int senderId,
+			@PathVariable("receiverId") int receiverId) {
+		DetachedCriteria dc = createDetachedCriteria(senderId, receiverId);
+		return chatService.getFullInformation(senderId, receiverId, dc);
 	}
 
 	/**
@@ -103,9 +103,10 @@ public class ChatController {
 	 * 
 	 * @param token
 	 */
-	@RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
-	public void updateToken(@RequestHeader(value = "token") String token, @PathVariable("id") int id) {
-		chatService.updateToken(token, id);
+	@RequestMapping(value = "/update/{idUser}", method = RequestMethod.PUT)
+	public void updateToken(@RequestHeader(value = "access_token") String access_token,
+			@PathVariable("idUser") int id) {
+		chatService.updateToken(access_token, id);
 	}
 
 }

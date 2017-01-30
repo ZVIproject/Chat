@@ -20,14 +20,14 @@ public class ChatService {
 	/**
 	 * Method for sending message between users
 	 * 
-	 * @param sender
-	 * @param reciver
-	 * @param text
+	 * @param senderId
+	 * @param receiverId
+	 * @param login
 	 * @return int
 	 */
-	public ReturnedId sendMessage(int sender, int reciver, String text) {
+	public ReturnedId sendMessage(int senderId, int receiverId, String login) {
 
-		return iChat.sendMessage(sender, reciver, text);
+		return iChat.sendMessage(senderId, receiverId, login);
 	}
 
 	/**
@@ -35,12 +35,12 @@ public class ChatService {
 	 * have 10 message
 	 * 
 	 * @param dc
-	 * @param sender
-	 * @param reciver
+	 * @param senderId
+	 * @param receiverId
 	 * @return Collection<Message>
 	 */
-	public Collection<MessageToDisplay> getInformation(int sender, int reciver) {
-		return iChat.getInformation(sender, reciver);
+	public Collection<MessageToDisplay> getInformation(int senderId, int receiverId) {
+		return iChat.getInformation(senderId, receiverId);
 
 	}
 
@@ -59,13 +59,13 @@ public class ChatService {
 	 * Get all information about correspondence between users
 	 * 
 	 * @param dc
-	 * @param sender
-	 * @param reciver
+	 * @param senderId
+	 * @param receiverId
 	 * @return Collection<Message>
 	 * @throws Exception
 	 */
-	public Collection<Message> getFullInformation(int sender, int reciver, DetachedCriteria dc) {
-		return iChat.getFullInformation(sender, reciver, dc);
+	public Collection<Message> getFullInformation(int senderId, int receiverId, DetachedCriteria dc) {
+		return iChat.getFullInformation(senderId, receiverId, dc);
 	}
 
 	/**

@@ -3,6 +3,7 @@ package com.zviproject.component.entity;
 import java.sql.Date;
 
 import javax.inject.Inject;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityResult;
 import javax.persistence.FieldResult;
@@ -22,21 +23,23 @@ import org.springframework.social.facebook.api.impl.FacebookTemplate;
  *
  */
 @SqlResultSetMapping(name = "MessageToDisplay", entities = {
-		@EntityResult(entityClass = MessageToDisplay.class, fields = { 
-				@FieldResult(name = "id", column = "id"),
-				@FieldResult(name = "time", column = "time"), 
+		@EntityResult(entityClass = MessageToDisplay.class, fields = { @FieldResult(name = "id", column = "id_message"),
+				@FieldResult(name = "time", column = "send_time"),
 				@FieldResult(name = "senderTok", column = "senderTok"),
-				@FieldResult(name = "text", column = "text") 
-				}) 
-		})
+				@FieldResult(name = "textMessage", column = "body") }) })
 
 public class MessageToDisplay {
 
 	@Id
+	@Column(name = "id_message")
 	private int id;
 
-	private String text;
+	@Column(name = "body")
+	private String textMessage;
+
 	private String senderTok;
+
+	@Column(name = "send_time")
 	private Date time;
 
 	/**
@@ -48,7 +51,23 @@ public class MessageToDisplay {
 	}
 
 	public String getTextMessage() {
-		return text;
+		return textMessage;
+	}
+
+	public void setTextMessage(String textMessage) {
+		this.textMessage = textMessage;
+	}
+
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
+
+	public void setToken(String senderTok) {
+		this.senderTok = senderTok;
 	}
 
 	public String getToken() {
@@ -60,21 +79,4 @@ public class MessageToDisplay {
 		return name;
 	}
 
-	public void setToken(String token) {
-		this.senderTok = token;
-	}
-
-	public void setTextMessage(String textMessage) {
-		this.text = textMessage;
-	}
-
-	public Date getTime() {
-		return time;
-	}
-
-	public void setTime(Date time) {
-		this.time = time;
-	}
-
 }
-
