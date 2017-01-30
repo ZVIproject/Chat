@@ -22,9 +22,13 @@ import org.springframework.social.facebook.api.impl.FacebookTemplate;
  *
  */
 @SqlResultSetMapping(name = "MessageToDisplay", entities = {
-		@EntityResult(entityClass = MessageToDisplay.class, fields = { @FieldResult(name = "id", column = "id"),
-				@FieldResult(name = "time", column = "time"), @FieldResult(name = "senderTok", column = "senderTok"),
-				@FieldResult(name = "text", column = "text") }) })
+		@EntityResult(entityClass = MessageToDisplay.class, fields = { 
+				@FieldResult(name = "id", column = "id"),
+				@FieldResult(name = "time", column = "time"), 
+				@FieldResult(name = "senderTok", column = "senderTok"),
+				@FieldResult(name = "text", column = "text") 
+				}) 
+		})
 
 public class MessageToDisplay {
 
