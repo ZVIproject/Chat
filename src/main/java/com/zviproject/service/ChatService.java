@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.zviproject.component.entity.Message;
 import com.zviproject.component.entity.MessageToDisplay;
+import com.zviproject.component.entity.ReturnedId;
 import com.zviproject.component.entity.User;
 import com.zviproject.component.interfacee.IChat;
 
@@ -24,7 +25,7 @@ public class ChatService {
 	 * @param text
 	 * @return int
 	 */
-	public int sendMessage(int sender, int reciver, String text) {
+	public ReturnedId sendMessage(int sender, int reciver, String text) {
 
 		return iChat.sendMessage(sender, reciver, text);
 	}
@@ -50,7 +51,7 @@ public class ChatService {
 	 * @param user
 	 * @return String
 	 */
-	public int registerUser(User user) {
+	public ReturnedId registerUser(User user) {
 		return iChat.registerUser(user);
 	}
 
@@ -61,9 +62,19 @@ public class ChatService {
 	 * @param sender
 	 * @param reciver
 	 * @return Collection<Message>
+	 * @throws Exception
 	 */
 	public Collection<Message> getFullInformation(int sender, int reciver, DetachedCriteria dc) {
 		return iChat.getFullInformation(sender, reciver, dc);
+	}
+
+	/**
+	 * Update token for user
+	 * 
+	 * @param token
+	 */
+	public void updateToken(String token, int id) {
+		iChat.updateToken(token, id);
 	}
 
 }
