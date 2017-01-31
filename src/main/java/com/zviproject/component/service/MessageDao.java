@@ -21,8 +21,8 @@ import com.zviproject.component.Util.HibernateUtil;
 import com.zviproject.component.entity.Message;
 import com.zviproject.component.entity.MessageToDisplay;
 import com.zviproject.component.entity.ReturnedId;
-import com.zviproject.component.entity.User;
-import com.zviproject.component.interfacee.IChat;
+import com.zviproject.component.entity.Status;
+import com.zviproject.component.interfacee.IMessage;
 
 /**
  * 
@@ -30,7 +30,7 @@ import com.zviproject.component.interfacee.IChat;
  *
  */
 @Repository
-public class ChatDao implements IChat {
+public class MessageDao implements IMessage {
 
 	/**
 	 * Get short information about message
@@ -42,33 +42,50 @@ public class ChatDao implements IChat {
 
 	private static final String SQL_COUNT_USERS = "SELECT COUNT(id_user) FROM users WHERE users.id_user in (:senderId, :receiverId) LIMIT 2";
 
-	private ReturnedId returnedId = new ReturnedId();
-
 	@Autowired
 	private HibernateUtil hibernateUtil;
 
 	/**
 	 * Printing information in stack trace
 	 */
-	private static Logger log = Logger.getLogger(ChatDao.class.getName());
+	private static Logger log = Logger.getLogger(MessageDao.class.getName());
 
 	/**
 	 * Method for sending message between users
 	 * 
-	 * @param senderIdId
+	 * @param senderId
 	 * @param receiverId
 	 * @param login
 	 * @return int
 	 */
 	@Override
 	@Transactional
-	public ReturnedId sendMessage(int senderId, int receiverId, String body) {
+	public ReturnedId saveMessage(int senderId, int receiverId, String body) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
+		ReturnedId returnedId;
 
-		if (!checkUser(senderId, receiverId)) {
-			returnedId.setStatus("error");
-			return returnedId;
+		try {
+
+			if (!checkUser(senderId, receiverId)) {
+				returnedId = new ReturnedId(0, Status.ERROR);
+				return returnedId;
+			}
+
+			Message messageForSave = prepareMessageToSave(senderId, receiverId, body);
+
+			session.save(messageForSave);
+
+			returnedId = new ReturnedId(messageForSave.getIdMessage(), Status.SUCCESSFUL);
+
+			log.info(String.format("Message have id ****** %d ******", messageForSave.getIdMessage()));
+		} finally {
+			session.close();
 		}
+
+		return returnedId;
+	}
+
+	private Message prepareMessageToSave(int senderId, int receiverId, String body) {
 		Date sendTimeMessage = new Date();
 
 		Message message = new Message();
@@ -77,19 +94,8 @@ public class ChatDao implements IChat {
 		message.setIdSender(receiverId);
 		message.setIdSender(senderId);
 		message.setSendTime(sendTimeMessage);
-		message.setDateTime(sendTimeMessage);
-		session.save(message);
 
-		returnedId.setId(message.getIdMessage());
-		returnedId.setStatus("done");
-
-		log.info(String.format("Message have id ****** %d ******", message.getIdMessage()));
-
-		if (session.isOpen()) {
-			session.close();
-		}
-
-		return returnedId;
+		return message;
 	}
 
 	/**
@@ -103,8 +109,11 @@ public class ChatDao implements IChat {
 	@Transactional
 	public Collection<MessageToDisplay> getInformation(int senderId, int receiverId) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
-		Collection<MessageToDisplay> messageToDisplays = null;
-		if (checkUser(senderId, receiverId)) {
+
+		try {
+			if (!checkUser(senderId, receiverId)) {
+				return null;
+			}
 
 			SQLQuery query = session.createSQLQuery(SQL_INFORMATION_ABOUT_USERS);
 			query.setParameter("senderId", senderId);
@@ -113,59 +122,12 @@ public class ChatDao implements IChat {
 			query.addEntity(MessageToDisplay.class);
 			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 
-			messageToDisplays = (List<MessageToDisplay>) query.list();
-
-		}
-
-		return messageToDisplays;
-
-	}
-
-	/**
-	 * Register new user in chat<br>
-	 * Return information for user.
-	 * 
-	 * @param user
-	 * @return String
-	 */
-	@Override
-	@Transactional
-	public ReturnedId registerUser(User user) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
-		boolean accessToRegister = checkRegisterUser(user.getLogin());
-
-		if (!accessToRegister) {
-			returnedId.setStatus("error");
-			return returnedId;
-		}
-
-		Date createTime = new Date();
-		user.setdateTime(createTime);
-		session.save(user);
-
-		returnedId.setId(user.getidUser());
-		returnedId.setStatus("done");
-
-		if (session.isOpen()) {
+			Collection<MessageToDisplay> messageToDisplays = (List<MessageToDisplay>) query.list();
+			return messageToDisplays;
+		} finally {
 			session.close();
 		}
-		log.info(String.format("New user hes id ****** %d ******", user.getidUser()));
-		return returnedId;
 
-	}
-
-	/**
-	 * Checking presence name user in a DB<br>
-	 * if user not in a DB then this name can be registered
-	 * 
-	 * @param name
-	 * @return exist
-	 */
-	private boolean checkRegisterUser(String login) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
-		Criteria criteriaUser = session.createCriteria(User.class.getName()).add(Restrictions.eq("login", login))
-				.setProjection(Projections.property("id"));
-		return criteriaUser.uniqueResult() == null;
 	}
 
 	/**
@@ -181,42 +143,74 @@ public class ChatDao implements IChat {
 	@Transactional
 	public Collection<Message> getFullInformation(int senderId, int receiverId, DetachedCriteria detachedCriteria) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
-
-		Collection<Message> messages = null;
-
-		if (checkUser(senderId, receiverId)) {
-			messages = (List<Message>) detachedCriteria.getExecutableCriteria(session).list();
+		if (!checkUser(senderId, receiverId)) {
+			return null;
 		}
+
+		Collection<Message> messages = (List<Message>) detachedCriteria.getExecutableCriteria(session).list();
 		return messages;
 	}
 
 	/**
-	 * Update token for user by id
+	 * Update text of message by id in DB
+	 * 
+	 * @param idSender
+	 * @param idMessage
+	 * @param textMessage
+	 * 
+	 * @return ReturnedId
 	 */
 	@Override
-	@Transactional
-	public ReturnedId updateToken(String access_token, int id_user) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+	public ReturnedId updateTextOfMessageById(int idSender, int idMessage, String textMessage) {
 
-		User userUpdate = (User) session.get(User.class, id_user);
-		userUpdate.setaccessToken(access_token);
-		session.beginTransaction();
-		session.update(userUpdate);
+		ReturnedId returnedId;
 
-		Date timeUpdate = new Date();
-		userUpdate.settimeStamp(timeUpdate);
+		if (!checkOneUser(idSender, idMessage)) {
 
-		session.getTransaction().commit();
+			returnedId = new ReturnedId(idMessage, Status.ERROR);
 
-		if (session.isOpen()) {
-			session.close();
+			return returnedId;
 		}
 
-		returnedId.setStatus("done");
-		returnedId.setId(id_user);
+		returnedId = new ReturnedId(idMessage, Status.ERROR);
+
+		Session session = hibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+
+		Message updateTextOfMessage = (Message) session.get(Message.class, idMessage);
+		updateTextOfMessage.setBody(textMessage);
+
+		Date timeUpdate = new Date();
+		updateTextOfMessage.setTimeStamp(timeUpdate);
+
+		session.update(updateTextOfMessage);
+		session.getTransaction().commit();
+
+		returnedId.setStatus(Status.SUCCESSFUL);
 
 		return returnedId;
+	}
 
+	/**
+	 * Check element on presence in DB
+	 * 
+	 * @param idElement
+	 */
+	private boolean checkOneUser(int idUser, int idMessage) {
+		Session session = hibernateUtil.getSessionFactory().openSession();
+
+		boolean exist = false;
+
+		Criteria search = session.createCriteria(Message.class.getName()).add(Restrictions.eq("idMessage", idMessage))
+				.setProjection(Projections.property("idSender"));
+
+		int checkUserid = (int) search.uniqueResult();
+
+		if (checkUserid == idUser) {
+			exist = true;
+		}
+
+		return exist;
 	}
 
 	/**
@@ -228,17 +222,22 @@ public class ChatDao implements IChat {
 	private boolean checkUser(int senderId, int receiverId) {
 		boolean exist = false;
 		Session session = hibernateUtil.getSessionFactory().openSession();
+		try {
+			SQLQuery query = session.createSQLQuery(SQL_COUNT_USERS);
+			query.setParameter("senderId", senderId);
+			query.setParameter("receiverId", receiverId);
 
-		SQLQuery query = session.createSQLQuery(SQL_COUNT_USERS);
-		query.setParameter("senderId", senderId);
-		query.setParameter("receiverId", receiverId);
+			Integer count = ((BigInteger) query.uniqueResult()).intValue();
+			if (count == 2) {
+				exist = true;
+			}
 
-		Integer count = ((BigInteger) query.uniqueResult()).intValue();
-		if (count == 2) {
-			exist = true;
+			return exist;
+
+		} finally {
+			session.close();
 		}
-		session.close();
 
-		return exist;
 	}
+
 }

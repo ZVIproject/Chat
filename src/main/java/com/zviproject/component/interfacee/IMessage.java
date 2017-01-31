@@ -7,9 +7,8 @@ import org.hibernate.criterion.DetachedCriteria;
 import com.zviproject.component.entity.Message;
 import com.zviproject.component.entity.MessageToDisplay;
 import com.zviproject.component.entity.ReturnedId;
-import com.zviproject.component.entity.User;
 
-public interface IChat {
+public interface IMessage {
 	/**
 	 * Method for sending message between users
 	 * 
@@ -17,7 +16,7 @@ public interface IChat {
 	 * @param reciver
 	 * @return int
 	 */
-	public ReturnedId sendMessage(int sender, int reciver, String text);
+	public ReturnedId saveMessage(int sender, int reciver, String text);
 
 	/**
 	 * Get all information about correspondence between users
@@ -40,17 +39,14 @@ public interface IChat {
 	public Collection<MessageToDisplay> getInformation(int sender, int reciver);
 
 	/**
-	 * Register new user in DB
+	 * Update text of message by id in DB
 	 * 
-	 * @param user
-	 * @return int
+	 * @param idSender
+	 * @param idMessage
+	 * @param textMessage
+	 * 
+	 * @return ReturnedId
 	 */
-	public ReturnedId registerUser(User user);
+	public ReturnedId updateTextOfMessageById(int idSender, int idMessage, String textMessage);
 
-	/**
-	 * Update token for user
-	 * 
-	 * @param token
-	 */
-	public ReturnedId updateToken(String token, int id);
 }
