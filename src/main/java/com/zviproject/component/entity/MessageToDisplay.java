@@ -24,7 +24,7 @@ import org.springframework.social.facebook.api.impl.FacebookTemplate;
  */
 @SqlResultSetMapping(name = "MessageToDisplay", entities = {
 		@EntityResult(entityClass = MessageToDisplay.class, fields = { @FieldResult(name = "id", column = "id_message"),
-				@FieldResult(name = "timeMessage", column = "send_timeMessage"),
+				@FieldResult(name = "timeMessage", column = "send_time"),
 				@FieldResult(name = "senderTok", column = "senderTok"),
 				@FieldResult(name = "textMessage", column = "body") }) })
 
@@ -39,7 +39,7 @@ public class MessageToDisplay {
 
 	private String senderTok;
 
-	@Column(name = "send_timeMessage")
+	@Column(name = "send_time")
 	private Date timeMessage;
 
 	/**
