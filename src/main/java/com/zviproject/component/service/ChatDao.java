@@ -40,7 +40,7 @@ public class ChatDao implements IChat {
 			+ " LEFT JOIN users AS r ON r.id_user=m.id_receiver LEFT JOIN users AS s ON s.id_user = m.id_sender"
 			+ " WHERE (m.id_sender = :senderId AND m.id_receiver=:receiverId) OR (m.id_sender=:receiverId AND m.id_receiver=:senderId)";
 
-	private static final String SQL_COUNT_USERS = "SELECT COUNT(id_user) FROM users WHERE users.id_user LIKE (:senderId) OR  users.id_user LIKE(:receiverId)";
+	private static final String SQL_COUNT_USERS = "SELECT COUNT(id_user) FROM users WHERE users.id_user in (:senderId, :receiverId) LIMIT 2";
 
 	private ReturnedId returnedId = new ReturnedId();
 
@@ -65,34 +65,31 @@ public class ChatDao implements IChat {
 	public ReturnedId sendMessage(int senderId, int receiverId, String body) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
 
-		if (checkUser(senderId, receiverId)) {
-			Date sendTimeMessage = new Date();
-
-			Message message = new Message();
-
-			message.setBody(body);
-			message.setId_receiver(receiverId);
-			message.setId_sender(senderId);
-			message.setSend_time(sendTimeMessage);
-			message.setDate_time(sendTimeMessage);
-			session.save(message);
-
-			returnedId.setId(message.getId_message());
-			returnedId.setStatus("done");
-
-			log.info(String.format("Message have id ****** %d ******", message.getId_message()));
-
-			if (session.isOpen()) {
-				session.close();
-			}
-
-			return returnedId;
-		} else {
+		if (!checkUser(senderId, receiverId)) {
 			returnedId.setStatus("error");
-			;
 			return returnedId;
 		}
+		Date sendTimeMessage = new Date();
 
+		Message message = new Message();
+
+		message.setBody(body);
+		message.setidReceiver(receiverId);
+		message.setidSender(senderId);
+		message.setsendTime(sendTimeMessage);
+		message.setdateTime(sendTimeMessage);
+		session.save(message);
+
+		returnedId.setId(message.getidMessage());
+		returnedId.setStatus("done");
+
+		log.info(String.format("Message have id ****** %d ******", message.getidMessage()));
+
+		if (session.isOpen()) {
+			session.close();
+		}
+
+		return returnedId;
 	}
 
 	/**
@@ -137,19 +134,22 @@ public class ChatDao implements IChat {
 		Session session = hibernateUtil.getSessionFactory().openSession();
 		boolean accessToRegister = checkRegisterUser(user.getLogin());
 
-		if (accessToRegister) {
-			session.save(user);
-
-			returnedId.setId(user.getId_user());
-			returnedId.setStatus("done");
-
-			if (session.isOpen()) {
-				session.close();
-			}
-			log.info(String.format("New user hes id ****** %d ******", user.getId_user()));
-			return returnedId;
-		} else
+		if (!accessToRegister) {
 			returnedId.setStatus("error");
+			return returnedId;
+		}
+
+		Date createTime = new Date();
+		user.setdateTime(createTime);
+		session.save(user);
+
+		returnedId.setId(user.getidUser());
+		returnedId.setStatus("done");
+
+		if (session.isOpen()) {
+			session.close();
+		}
+		log.info(String.format("New user hes id ****** %d ******", user.getidUser()));
 		return returnedId;
 
 	}
@@ -195,16 +195,27 @@ public class ChatDao implements IChat {
 	 */
 	@Override
 	@Transactional
-	public void updateToken(String access_token, int id_user) {
+	public ReturnedId updateToken(String access_token, int id_user) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
+
 		User userUpdate = (User) session.get(User.class, id_user);
-		userUpdate.setAccess_token(access_token);
+		userUpdate.setaccessToken(access_token);
 		session.beginTransaction();
 		session.update(userUpdate);
+
+		Date timeUpdate = new Date();
+		userUpdate.settimeStamp(timeUpdate);
+
 		session.getTransaction().commit();
+
 		if (session.isOpen()) {
 			session.close();
 		}
+
+		returnedId.setStatus("done");
+		returnedId.setId(id_user);
+
+		return returnedId;
 
 	}
 

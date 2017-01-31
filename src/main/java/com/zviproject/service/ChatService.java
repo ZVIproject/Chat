@@ -73,8 +73,8 @@ public class ChatService {
 	 * 
 	 * @param token
 	 */
-	public void updateToken(String token, int id) {
-		iChat.updateToken(token, id);
+	public ReturnedId updateToken(String token, int id) {
+		return iChat.updateToken(token, id);
 	}
 
 }

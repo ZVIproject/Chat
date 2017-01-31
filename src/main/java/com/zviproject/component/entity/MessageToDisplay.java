@@ -24,7 +24,7 @@ import org.springframework.social.facebook.api.impl.FacebookTemplate;
  */
 @SqlResultSetMapping(name = "MessageToDisplay", entities = {
 		@EntityResult(entityClass = MessageToDisplay.class, fields = { @FieldResult(name = "id", column = "id_message"),
-				@FieldResult(name = "time", column = "send_time"),
+				@FieldResult(name = "timeMessage", column = "send_timeMessage"),
 				@FieldResult(name = "senderTok", column = "senderTok"),
 				@FieldResult(name = "textMessage", column = "body") }) })
 
@@ -39,8 +39,8 @@ public class MessageToDisplay {
 
 	private String senderTok;
 
-	@Column(name = "send_time")
-	private Date time;
+	@Column(name = "send_timeMessage")
+	private Date timeMessage;
 
 	/**
 	 * Working with FaceBook API
@@ -58,12 +58,12 @@ public class MessageToDisplay {
 		this.textMessage = textMessage;
 	}
 
-	public Date getTime() {
-		return time;
+	public Date gettimeMessage() {
+		return timeMessage;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void settimeMessage(Date timeMessage) {
+		this.timeMessage = timeMessage;
 	}
 
 	public void setToken(String senderTok) {

@@ -3,6 +3,7 @@ package com.zviproject.component.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,44 +17,56 @@ public class Message implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id_message;
-	private int id_sender;
-	private int id_receiver;
-	private Date send_time;
+	@Column(name = "")
+	private Integer idMessage;
+
+	@Column(name = "id_sender")
+	private int idSender;
+
+	@Column(name = "id_receiver")
+	private int idReceiver;
+
+	@Column(name = "send_time")
+	private Date sendTime;
+
 	private String body;
-	private Date date_time;
-	private Date time_stamp;
 
-	public Integer getId_message() {
-		return id_message;
+	@Column(name = "date_time")
+	private Date dateTime;
+
+	@Column(name = "time_stamp")
+	private Date timeStamp;
+
+	public Integer getidMessage() {
+		return idMessage;
 	}
 
-	public void setId_message(Integer id_message) {
-		this.id_message = id_message;
+	public void setidMessage(Integer idMessage) {
+		this.idMessage = idMessage;
 	}
 
-	public int getId_sender() {
-		return id_sender;
+	public int getidSender() {
+		return idSender;
 	}
 
-	public void setId_sender(int id_sender) {
-		this.id_sender = id_sender;
+	public void setidSender(int idSender) {
+		this.idSender = idSender;
 	}
 
-	public int getId_receiver() {
-		return id_receiver;
+	public int getidReceiver() {
+		return idReceiver;
 	}
 
-	public void setId_receiver(int id_receiver) {
-		this.id_receiver = id_receiver;
+	public void setidReceiver(int idReceiver) {
+		this.idReceiver = idReceiver;
 	}
 
-	public Date getSend_time() {
-		return send_time;
+	public Date getsendTime() {
+		return sendTime;
 	}
 
-	public void setSend_time(Date send_time) {
-		this.send_time = send_time;
+	public void setsendTime(Date sendTime) {
+		this.sendTime = sendTime;
 	}
 
 	public String getBody() {
@@ -64,20 +77,20 @@ public class Message implements Serializable {
 		this.body = body;
 	}
 
-	public Date getDate_time() {
-		return date_time;
+	public Date getdateTime() {
+		return dateTime;
 	}
 
-	public void setDate_time(Date date_time) {
-		this.date_time = date_time;
+	public void setdateTime(Date dateTime) {
+		this.dateTime = dateTime;
 	}
 
-	public Date getTime_stamp() {
-		return time_stamp;
+	public Date gettimeStamp() {
+		return timeStamp;
 	}
 
-	public void setTime_stamp(Date time_stamp) {
-		this.time_stamp = time_stamp;
+	public void settimeStamp(Date timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 
 	public static long getSerialversionuid() {

@@ -3,6 +3,7 @@ package com.zviproject.component.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,18 +17,26 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id_user;
-	private String login;
-	private String access_token;
-	private Date date_time;
-	private Date time_stamp;
+	@Column(name = "id_user")
+	private Integer idUser;
 
-	public Integer getId_user() {
-		return id_user;
+	private String login;
+
+	@Column(name = "access_token")
+	private String accessToken;
+
+	@Column(name = "date_time")
+	private Date dateTime;
+
+	@Column(name = "time_stamp")
+	private Date timeStamp;
+
+	public Integer getidUser() {
+		return idUser;
 	}
 
-	public void setId_user(Integer id_user) {
-		this.id_user = id_user;
+	public void setidUser(Integer idUser) {
+		this.idUser = idUser;
 	}
 
 	public String getLogin() {
@@ -38,28 +47,28 @@ public class User implements Serializable {
 		this.login = login;
 	}
 
-	public String getAccess_token() {
-		return access_token;
+	public String getaccessToken() {
+		return accessToken;
 	}
 
-	public void setAccess_token(String access_token) {
-		this.access_token = access_token;
+	public void setaccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 
-	public Date getDate_time() {
-		return date_time;
+	public Date getdateTime() {
+		return dateTime;
 	}
 
-	public void setDate_time(Date date_time) {
-		this.date_time = date_time;
+	public void setdateTime(Date dateTime) {
+		this.dateTime = dateTime;
 	}
 
-	public Date getTime_stamp() {
-		return time_stamp;
+	public Date gettimeStamp() {
+		return timeStamp;
 	}
 
-	public void setTime_stamp(Date time_stamp) {
-		this.time_stamp = time_stamp;
+	public void settimeStamp(Date timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 
 	public static long getSerialversionuid() {

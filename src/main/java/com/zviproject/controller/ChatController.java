@@ -104,9 +104,9 @@ public class ChatController {
 	 * @param token
 	 */
 	@RequestMapping(value = "/update/{idUser}", method = RequestMethod.PUT)
-	public void updateToken(@RequestHeader(value = "access_token") String access_token,
+	public ReturnedId updateToken(@RequestHeader(value = "access_token") String access_token,
 			@PathVariable("idUser") int id) {
-		chatService.updateToken(access_token, id);
+		return chatService.updateToken(access_token, id);
 	}
 
 }

@@ -52,5 +52,5 @@ public interface IChat {
 	 * 
 	 * @param token
 	 */
-	public void updateToken(String token, int id);
+	public ReturnedId updateToken(String token, int id);
 }
