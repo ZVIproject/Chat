@@ -74,16 +74,16 @@ public class ChatDao implements IChat {
 		Message message = new Message();
 
 		message.setBody(body);
-		message.setidReceiver(receiverId);
-		message.setidSender(senderId);
-		message.setsendTime(sendTimeMessage);
-		message.setdateTime(sendTimeMessage);
+		message.setIdSender(receiverId);
+		message.setIdSender(senderId);
+		message.setSendTime(sendTimeMessage);
+		message.setDateTime(sendTimeMessage);
 		session.save(message);
 
-		returnedId.setId(message.getidMessage());
+		returnedId.setId(message.getIdMessage());
 		returnedId.setStatus("done");
 
-		log.info(String.format("Message have id ****** %d ******", message.getidMessage()));
+		log.info(String.format("Message have id ****** %d ******", message.getIdMessage()));
 
 		if (session.isOpen()) {
 			session.close();

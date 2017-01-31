@@ -17,14 +17,14 @@ public class Message implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "")
+	@Column(name = "id_message")
 	private Integer idMessage;
 
 	@Column(name = "id_sender")
-	private int idSender;
+	private Integer idSender;
 
 	@Column(name = "id_receiver")
-	private int idReceiver;
+	private Integer idReceiver;
 
 	@Column(name = "send_time")
 	private Date sendTime;
@@ -37,35 +37,35 @@ public class Message implements Serializable {
 	@Column(name = "time_stamp")
 	private Date timeStamp;
 
-	public Integer getidMessage() {
+	public Integer getIdMessage() {
 		return idMessage;
 	}
 
-	public void setidMessage(Integer idMessage) {
+	public void setIdMessage(Integer idMessage) {
 		this.idMessage = idMessage;
 	}
 
-	public int getidSender() {
+	public int getIdSender() {
 		return idSender;
 	}
 
-	public void setidSender(int idSender) {
+	public void setIdSender(int idSender) {
 		this.idSender = idSender;
 	}
 
-	public int getidReceiver() {
+	public int getIdReceiver() {
 		return idReceiver;
 	}
 
-	public void setidReceiver(int idReceiver) {
+	public void setIdReceiver(int idReceiver) {
 		this.idReceiver = idReceiver;
 	}
 
-	public Date getsendTime() {
+	public Date getSendTime() {
 		return sendTime;
 	}
 
-	public void setsendTime(Date sendTime) {
+	public void setSendTime(Date sendTime) {
 		this.sendTime = sendTime;
 	}
 
@@ -77,24 +77,20 @@ public class Message implements Serializable {
 		this.body = body;
 	}
 
-	public Date getdateTime() {
+	public Date getDateTime() {
 		return dateTime;
 	}
 
-	public void setdateTime(Date dateTime) {
+	public void setDateTime(Date dateTime) {
 		this.dateTime = dateTime;
 	}
 
-	public Date gettimeStamp() {
+	public Date getTimeStamp() {
 		return timeStamp;
 	}
 
-	public void settimeStamp(Date timeStamp) {
+	public void setTimeStamp(Date timeStamp) {
 		this.timeStamp = timeStamp;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 }

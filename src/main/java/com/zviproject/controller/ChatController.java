@@ -36,10 +36,10 @@ public class ChatController {
 	 * @return DetachedCriteria
 	 */
 	public DetachedCriteria createDetachedCriteria(int name1, int name2) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Message.class).addOrder(Order.asc("send_time"))
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Message.class).addOrder(Order.asc("sendTime"))
 				.add(Restrictions.or(
-						Restrictions.and(Restrictions.eq("id_sender", name1), Restrictions.eq("id_receiver", name2)),
-						Restrictions.and(Restrictions.eq("id_sender", name2), Restrictions.eq("id_receiver", name1))));
+						Restrictions.and(Restrictions.eq("idSender", name1), Restrictions.eq("idReceiver", name2)),
+						Restrictions.and(Restrictions.eq("idSender", name2), Restrictions.eq("idReceiver", name1))));
 		return detachedCriteria;
 	}
 
