@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.zviproject.component.entity.Message;
 import com.zviproject.component.entity.MessageToDisplay;
+import com.zviproject.component.entity.ReturnedId;
 import com.zviproject.component.entity.User;
 import com.zviproject.component.interfacee.IChat;
 
@@ -19,14 +20,14 @@ public class ChatService {
 	/**
 	 * Method for sending message between users
 	 * 
-	 * @param sender
-	 * @param reciver
-	 * @param text
+	 * @param senderId
+	 * @param receiverId
+	 * @param login
 	 * @return int
 	 */
-	public int sendMessage(int sender, int reciver, String text) {
+	public ReturnedId sendMessage(int senderId, int receiverId, String login) {
 
-		return iChat.sendMessage(sender, reciver, text);
+		return iChat.sendMessage(senderId, receiverId, login);
 	}
 
 	/**
@@ -34,12 +35,12 @@ public class ChatService {
 	 * have 10 message
 	 * 
 	 * @param dc
-	 * @param sender
-	 * @param reciver
+	 * @param senderId
+	 * @param receiverId
 	 * @return Collection<Message>
 	 */
-	public Collection<MessageToDisplay> getInformation(int sender, int reciver) {
-		return iChat.getInformation(sender, reciver);
+	public Collection<MessageToDisplay> getInformation(int senderId, int receiverId) {
+		return iChat.getInformation(senderId, receiverId);
 
 	}
 
@@ -50,7 +51,7 @@ public class ChatService {
 	 * @param user
 	 * @return String
 	 */
-	public int registerUser(User user) {
+	public ReturnedId registerUser(User user) {
 		return iChat.registerUser(user);
 	}
 
@@ -58,12 +59,22 @@ public class ChatService {
 	 * Get all information about correspondence between users
 	 * 
 	 * @param dc
-	 * @param sender
-	 * @param reciver
+	 * @param senderId
+	 * @param receiverId
 	 * @return Collection<Message>
+	 * @throws Exception
 	 */
-	public Collection<Message> getFullInformation(int sender, int reciver, DetachedCriteria dc) {
-		return iChat.getFullInformation(sender, reciver, dc);
+	public Collection<Message> getFullInformation(int senderId, int receiverId, DetachedCriteria dc) {
+		return iChat.getFullInformation(senderId, receiverId, dc);
+	}
+
+	/**
+	 * Update token for user
+	 * 
+	 * @param token
+	 */
+	public ReturnedId updateToken(String token, int id) {
+		return iChat.updateToken(token, id);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.zviproject.component.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,59 +11,90 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Messages")
+@Table(name = "messages")
 public class Message implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	@Column(name = "")
+	private Integer idMessage;
 
-	private Date time;
+	@Column(name = "id_sender")
+	private int idSender;
 
-	private String text;
+	@Column(name = "id_receiver")
+	private int idReceiver;
 
-	private int sender;
+	@Column(name = "send_time")
+	private Date sendTime;
 
-	private int receiver;
+	private String body;
 
-	public Integer getId() {
-		return id;
+	@Column(name = "date_time")
+	private Date dateTime;
+
+	@Column(name = "time_stamp")
+	private Date timeStamp;
+
+	public Integer getidMessage() {
+		return idMessage;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setidMessage(Integer idMessage) {
+		this.idMessage = idMessage;
 	}
 
-	public Date getTime() {
-		return time;
+	public int getidSender() {
+		return idSender;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void setidSender(int idSender) {
+		this.idSender = idSender;
 	}
 
-	public String getText() {
-		return text;
+	public int getidReceiver() {
+		return idReceiver;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setidReceiver(int idReceiver) {
+		this.idReceiver = idReceiver;
 	}
 
-	public int getSender() {
-		return sender;
+	public Date getsendTime() {
+		return sendTime;
 	}
 
-	public void setSender(int sender) {
-		this.sender = sender;
+	public void setsendTime(Date sendTime) {
+		this.sendTime = sendTime;
 	}
 
-	public int getReceiver() {
-		return receiver;
+	public String getBody() {
+		return body;
 	}
 
-	public void setReceiver(int receiver) {
-		this.receiver = receiver;
+	public void setBody(String body) {
+		this.body = body;
 	}
+
+	public Date getdateTime() {
+		return dateTime;
+	}
+
+	public void setdateTime(Date dateTime) {
+		this.dateTime = dateTime;
+	}
+
+	public Date gettimeStamp() {
+		return timeStamp;
+	}
+
+	public void settimeStamp(Date timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 }
