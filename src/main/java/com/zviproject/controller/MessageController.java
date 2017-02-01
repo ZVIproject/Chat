@@ -29,8 +29,8 @@ public class MessageController {
 	/**
 	 * Request for return history of message
 	 * 
-	 * @param name1
-	 * @param name2
+	 * @param id sender
+	 * @param id room
 	 * @return DetachedCriteria
 	 */
 	public DetachedCriteria createDetachedCriteria(int senderId, int receiverId) {
@@ -44,22 +44,22 @@ public class MessageController {
 	}
 
 	/**
-	 * Method for sending messages between users
+	 * Method for sending messages
 	 * 
 	 * @param senderId
 	 * @param receiverId
 	 * @return int
 	 */
 	@RequestMapping(value = "/{senderId}/{receiverId}", method = RequestMethod.POST)
-	public ReturnedId sendMessage(@PathVariable("senderId") int senderId, @PathVariable("receiverId") int receiverId,
-			@RequestBody String login) {
-		return messageService.sendMessage(senderId, receiverId, login);
+	public ReturnedId sendMessage(@PathVariable("senderId") int senderId, @PathVariable("receiverId") int receiverId) {
+		return messageService.sendMessage(senderId, receiverId);
 	}
 
 	/**
-	 * Get information about correspondence between users in pages
+	 * Get information about correspondence of user in room by pages
 	 * 
-	 * @param page
+	 * @param senderId
+	 * @param receiverId
 	 * @return Collection<MessageToDisplay>
 	 */
 	@RequestMapping(value = "/{senderId}/{receiverId}/information", method = RequestMethod.GET)

@@ -99,11 +99,11 @@ public class MessageDao implements IMessage {
 	}
 
 	/**
-	 * Get information about correspondence between users in pages
+	 * Get information about correspondence of user in room
 	 * 
-	 * @param page
+	 * @param id sender(user)
+	 * @param id receiver(room)
 	 * @return Collection<MessageToDisplay>
-	 * @throws Exception
 	 */
 	@Override
 	@Transactional
@@ -131,13 +131,11 @@ public class MessageDao implements IMessage {
 	}
 
 	/**
-	 * Get all information about correspondence between users
+	 * Get information about correspondence of user in room
 	 * 
-	 * @param dc
-	 *            - get information about message
-	 * @param senderId
-	 * @param receiverId
-	 * @return Collection<Message>
+	 * @param id sender(user)
+	 * @param id receiver(room)
+	 * @return Collection<MessageToDisplay>
 	 */
 	@Override
 	@Transactional
