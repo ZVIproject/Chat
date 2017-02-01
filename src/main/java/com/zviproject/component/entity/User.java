@@ -2,12 +2,14 @@ package com.zviproject.component.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -17,7 +19,7 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_user")
+	@Column(name = "id")
 	private Integer idUser;
 
 	private String login;
@@ -25,11 +27,9 @@ public class User implements Serializable {
 	@Column(name = "access_token")
 	private String accessToken;
 
-	@Column(name = "date_time")
-	private Date dateTime;
-
-	@Column(name = "time_stamp")
-	private Date timeStamp;
+	
+	@ManyToMany(mappedBy = "users_in_rooms")
+	private Set<Room> userRooms;
 
 	public Integer getidUser() {
 		return idUser;
@@ -55,24 +55,15 @@ public class User implements Serializable {
 		this.accessToken = accessToken;
 	}
 
-	public Date getdateTime() {
-		return dateTime;
+	public Set<Room> getUserRooms() {
+		return userRooms;
 	}
 
-	public void setdateTime(Date dateTime) {
-		this.dateTime = dateTime;
-	}
-
-	public Date gettimeStamp() {
-		return timeStamp;
-	}
-
-	public void settimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setUserRooms(Set<Room> userRooms) {
+		this.userRooms = userRooms;
 	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
 }
