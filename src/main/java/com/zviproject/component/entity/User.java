@@ -1,13 +1,17 @@
 package com.zviproject.component.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -17,26 +21,25 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_user")
-	private Integer idUser;
+	private Integer id;
 
 	private String login;
 
 	@Column(name = "access_token")
 	private String accessToken;
 
-	@Column(name = "date_time")
-	private Date dateTime;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name="roomuser",
+		joinColumns = @JoinColumn(name="user_id", referencedColumnName="id"),
+		inverseJoinColumns = @JoinColumn(name="room_id", referencedColumnName="id"))
+	private Set<Room> rooms;
 
-	@Column(name = "time_stamp")
-	private Date timeStamp;
-
-	public Integer getidUser() {
-		return idUser;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setidUser(Integer idUser) {
-		this.idUser = idUser;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getLogin() {
@@ -47,32 +50,20 @@ public class User implements Serializable {
 		this.login = login;
 	}
 
-	public String getaccessToken() {
+	public String getAccessToken() {
 		return accessToken;
 	}
 
-	public void setaccessToken(String accessToken) {
+	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
 
-	public Date getdateTime() {
-		return dateTime;
+	public Set<Room> getRooms() {
+		return rooms;
 	}
 
-	public void setdateTime(Date dateTime) {
-		this.dateTime = dateTime;
-	}
-
-	public Date gettimeStamp() {
-		return timeStamp;
-	}
-
-	public void settimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public void setRooms(Set<Room> rooms) {
+		this.rooms = rooms;
 	}
 
 }

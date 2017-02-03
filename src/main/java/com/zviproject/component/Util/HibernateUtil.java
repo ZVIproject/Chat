@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
  * Working with session for access to db
  */
 @Component
-@Scope("application")
 public class HibernateUtil {
 
 	private SessionFactory sessionFactory;
@@ -30,5 +29,4 @@ public class HibernateUtil {
 	public void shutdown() {
 		getSessionFactory().close();
 	}
-
 }

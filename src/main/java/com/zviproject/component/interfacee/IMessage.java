@@ -14,9 +14,10 @@ public interface IMessage {
 	 * 
 	 * @param name1
 	 * @param reciver
+	 * @param body
 	 * @return int
 	 */
-	public ReturnedId saveMessage(int sender, int reciver, String text);
+	public ReturnedId saveMessage(int sender, int reciver, String body);
 
 	/**
 	 * Get all information about correspondence between users
