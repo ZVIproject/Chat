@@ -24,9 +24,9 @@ public class MessageService {
 	 * @param login
 	 * @return int
 	 */
-	public ReturnedId sendMessage(int senderId, int receiverId) {
+	public ReturnedId sendMessage(int senderId, int receiverId, String body) {
 
-		return iMessage.saveMessage(senderId, receiverId);
+		return iMessage.saveMessage(senderId, receiverId, body);
 	}
 
 	/**

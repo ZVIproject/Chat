@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityResult;
 import javax.persistence.FieldResult;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SqlResultSetMapping;
 
@@ -23,7 +25,7 @@ import org.springframework.social.facebook.api.impl.FacebookTemplate;
  *
  */
 @SqlResultSetMapping(name = "MessageToDisplay", entities = {
-		@EntityResult(entityClass = MessageToDisplay.class, fields = { @FieldResult(name = "id", column = "id_message"),
+		@EntityResult(entityClass = MessageToDisplay.class, fields = { @FieldResult(name = "id", column = "id"),
 				@FieldResult(name = "timeMessage", column = "send_time"),
 				@FieldResult(name = "senderTok", column = "senderTok"),
 				@FieldResult(name = "textMessage", column = "body") }) })
@@ -31,7 +33,7 @@ import org.springframework.social.facebook.api.impl.FacebookTemplate;
 public class MessageToDisplay {
 
 	@Id
-	@Column(name = "id_message")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name = "body")
@@ -74,9 +76,7 @@ public class MessageToDisplay {
 		Facebook facebook;
 		facebook = new FacebookTemplate(senderTok, "me");
 		User me = facebook.userOperations().getUserProfile();
-		String name = me.getName();
-
-		return name;
+		return me.getName();
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.zviproject.controller;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zviproject.component.entity.ReturnedId;
+import com.zviproject.component.entity.Room;
 import com.zviproject.component.entity.User;
 import com.zviproject.service.UserService;
 
@@ -20,6 +23,7 @@ public class UserController {
 
 	@Autowired
 	UserService messageService;
+	
 
 	/**
 	 * Register new user in chat<br>
@@ -45,4 +49,17 @@ public class UserController {
 			@PathVariable("idUser") int id) {
 		return messageService.updateToken(access_token, id);
 	}
+	
+	/**
+	 * Return all users in the room.
+	 * 
+	 * @param id
+	 * @return List<User>
+	 */
+
+	@RequestMapping(value = "/{id}/usersInRoom", method = RequestMethod.GET)
+	public Set<Room> getUsersInRoom(@PathVariable("id") Integer id) {
+		return messageService.getUsersInRoom(id);
+
+	}		
 }

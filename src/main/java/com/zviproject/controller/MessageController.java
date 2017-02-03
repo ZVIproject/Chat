@@ -50,9 +50,10 @@ public class MessageController {
 	 * @param receiverId
 	 * @return int
 	 */
-	@RequestMapping(value = "/{senderId}/{receiverId}", method = RequestMethod.POST)
-	public ReturnedId sendMessage(@PathVariable("senderId") int senderId, @PathVariable("receiverId") int receiverId) {
-		return messageService.sendMessage(senderId, receiverId);
+	@RequestMapping(value = "/{sender_id}/{receiver_id}", method = RequestMethod.POST)
+	public ReturnedId sendMessage(@PathVariable("sender_id") int senderId, @PathVariable("receiver_id") int receiverId,
+			@RequestBody String body) {
+		return messageService.sendMessage(senderId, receiverId, body);
 	}
 
 	/**
@@ -62,11 +63,11 @@ public class MessageController {
 	 * @param receiverId
 	 * @return Collection<MessageToDisplay>
 	 */
-	@RequestMapping(value = "/{senderId}/{receiverId}/information", method = RequestMethod.GET)
-	public Collection<MessageToDisplay> getInformation(@PathVariable("senderId") int senderId,
-			@PathVariable("receiverId") int receiverId) {
+	@RequestMapping(value = "/{sender_id}/{receiver_id}/information", method = RequestMethod.GET)
+	public Collection<MessageToDisplay> getInformation(@PathVariable("sender_id") int sender_id,
+			@PathVariable("receiver_id") int receiver_id) {
 
-		return messageService.getInformation(senderId, receiverId);
+		return messageService.getInformation(sender_id, receiver_id);
 	}
 
 	/**
@@ -77,11 +78,11 @@ public class MessageController {
 	 * @param receiverId
 	 * @return Collection<Message>
 	 */
-	@RequestMapping(value = "/{senderId}/{receiverId}/informationFull", method = RequestMethod.GET)
-	public Collection<Message> getFullInformation(@PathVariable("senderId") int senderId,
-			@PathVariable("receiverId") int receiverId) {
-		DetachedCriteria dc = createDetachedCriteria(senderId, receiverId);
-		return messageService.getFullInformation(senderId, receiverId, dc);
+	@RequestMapping(value = "/{sender_id}/{receiver_id}/informationFull", method = RequestMethod.GET)
+	public Collection<Message> getFullInformation(@PathVariable("sender_id") int sender_id,
+			@PathVariable("receiver_id") int receiver_id) {
+		DetachedCriteria dc = createDetachedCriteria(sender_id, receiver_id);
+		return messageService.getFullInformation(sender_id, receiver_id, dc);
 	}
 
 	/**
@@ -93,8 +94,8 @@ public class MessageController {
 	 * 
 	 * @return ReturnedId
 	 */
-	@RequestMapping(value = "/update_message/{idSender}/{idMessage}", method = RequestMethod.PUT)
-	public ReturnedId updateTextOfMessageById(@PathVariable("idSender") int idSender,
+	@RequestMapping(value = "/update_message/{sender_id}/{idMessage}", method = RequestMethod.PUT)
+	public ReturnedId updateTextOfMessageById(@PathVariable("sender_id") int idSender,
 			@PathVariable("idMessage") int idMessage, @RequestBody String textMessage) {
 		return messageService.updateTextOfMessageById(idSender, idMessage, textMessage);
 	}

@@ -1,9 +1,11 @@
 package com.zviproject.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,8 +51,7 @@ public class RoomController {
 		 */
 
 		@RequestMapping(value = "/{id}/usersInRoom", method = RequestMethod.GET)
-		public List<User> getUsersInRoom(@RequestBody Integer id) {
-
+		public List<User> getUsersInRoom(@PathVariable("id") Integer id) {
 			return roomService.getUsersInRoom(id);
 
 		}		

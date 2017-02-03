@@ -17,25 +17,20 @@ public class Message implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_message")
+	@Column(name = "id")
 	private Integer idMessage;
 
-	@Column(name = "id_sender")
+	@Column(name = "sender_id")
 	private Integer idSender;
 
-	@Column(name = "id_receiver")
+	@Column(name = "receiver_id")
 	private Integer idReceiver;
-
+	
 	@Column(name = "send_time")
 	private Date sendTime;
-
+	
 	private String body;
 
-	@Column(name = "date_time")
-	private Date dateTime;
-
-	@Column(name = "time_stamp")
-	private Date timeStamp;
 
 	public Integer getIdMessage() {
 		return idMessage;
@@ -61,14 +56,6 @@ public class Message implements Serializable {
 		this.idReceiver = idReceiver;
 	}
 
-	public Date getSendTime() {
-		return sendTime;
-	}
-
-	public void setSendTime(Date sendTime) {
-		this.sendTime = sendTime;
-	}
-
 	public String getBody() {
 		return body;
 	}
@@ -77,20 +64,11 @@ public class Message implements Serializable {
 		this.body = body;
 	}
 
-	public Date getDateTime() {
-		return dateTime;
+	public Date getSendTime() {
+		return sendTime;
 	}
 
-	public void setDateTime(Date dateTime) {
-		this.dateTime = dateTime;
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
 	}
-
-	public Date getTimeStamp() {
-		return timeStamp;
-	}
-
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
 }

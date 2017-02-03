@@ -1,6 +1,7 @@
 package com.zviproject.component.service;
 
-import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -14,9 +15,11 @@ import com.zviproject.component.Util.HibernateUtil;
 import com.zviproject.component.entity.ReturnedId;
 import com.zviproject.component.entity.Room;
 import com.zviproject.component.entity.Status;
+import com.zviproject.component.entity.User;
+import com.zviproject.component.interfacee.IRoom;
 
 @Repository
-public class RoomDao {
+public class RoomDao implements IRoom {
 	@Autowired
 	private HibernateUtil hibernateUtil;
 
@@ -31,17 +34,15 @@ public class RoomDao {
 	@Transactional
 	public ReturnedId registerRoom(Room room) {
 		ReturnedId returnedId;
-		if (!checkRegisterRoom(room.getRoomName())) {
-			returnedId = new ReturnedId(room.getIdRoom(), Status.ERROR);
+		if (!checkRegisterRoom(room.getName())) {
+			returnedId = new ReturnedId(0, Status.ERROR);
 			return returnedId;
 		}
 
 
-		try(Session session = hibernateUtil.getSessionFactory().openSession()) {		
-			
+		try(Session session = hibernateUtil.getSessionFactory().openSession()) {
 			session.save(room);
-
-			returnedId = new ReturnedId(room.getIdRoom(), Status.SUCCESSFUL);
+			returnedId = new ReturnedId(room.getId(), Status.SUCCESSFUL);
 			return returnedId;
 		}
 	}
@@ -53,10 +54,19 @@ public class RoomDao {
 	 * @param name
 	 * @return exist
 	 */
-	private boolean checkRegisterRoom(String room) {
+	private boolean checkRegisterRoom(String roomName) {
 		Session session = hibernateUtil.getSessionFactory().openSession();
-		Criteria criteriaUser = session.createCriteria(Room.class.getName()).add(Restrictions.eq("name", roomName))
+		Criteria criteriaRoom = session.createCriteria(Room.class.getName())
+				.add(Restrictions.eq("name", roomName))
 				.setProjection(Projections.property("id"));
-		return criteriaUser.uniqueResult() == null;
+		return criteriaRoom.uniqueResult() == null;
+	}
+
+
+	public List<User> getUsersInRoom(Integer roomId) {
+		try(Session session = hibernateUtil.getSessionFactory().openSession()){						
+			List<User> users = session.get(Room.class, roomId).getUsers();
+			return users;
+		}		
 	}
 }
