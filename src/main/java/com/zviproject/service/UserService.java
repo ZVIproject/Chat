@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zviproject.component.entity.ReturnedId;
 import com.zviproject.component.entity.Room;
@@ -11,6 +12,7 @@ import com.zviproject.component.entity.User;
 import com.zviproject.component.interfacee.IUser;
 
 @Service
+@Transactional
 public class UserService {
 
 	@Autowired

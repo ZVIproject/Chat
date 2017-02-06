@@ -1,6 +1,7 @@
 package com.zviproject.component.service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,10 +13,10 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zviproject.component.Util.HibernateUtil;
 import com.zviproject.component.entity.Message;
 import com.zviproject.component.entity.MessageToDisplay;
 import com.zviproject.component.entity.ReturnedId;
@@ -30,7 +31,8 @@ import com.zviproject.component.interfacee.IMessage;
  *
  */
 @Repository
-public class MessageDao implements IMessage {
+@Qualifier
+public class MessageDao extends HibernateUtil implements IMessage {
 
 	/**
 	 * Get short information about message
@@ -39,9 +41,6 @@ public class MessageDao implements IMessage {
 			+ " FROM messages AS m"
 			+ " LEFT JOIN rooms AS r ON r.id=m.receiver_id LEFT JOIN users AS s ON s.id= m.sender_id"
 			+ " WHERE (m.sender_id = :senderId AND m.receiver_id=:receiverId)";
-
-	@Autowired
-	private HibernateUtil hibernateUtil;
 
 	/**
 	 * Printing information in stack trace
@@ -61,15 +60,13 @@ public class MessageDao implements IMessage {
 	public ReturnedId saveMessage(int senderId, int receiverId, String body) {
 		ReturnedId returnedId;
 
-		try(Session session = hibernateUtil.getSessionFactory().openSession()) {
+		try(Session session = getSessionFactory().openSession()) {
 
 			if (!checkUser(senderId, receiverId)) {
-				returnedId = new ReturnedId(0, Status.ERROR);
-				return returnedId;
+				return new ReturnedId(0, Status.ERROR);
 			}
 
 			Message messageForSave = prepareMessageToSave(senderId, receiverId, body);
-
 			session.save(messageForSave);
 
 			returnedId = new ReturnedId(messageForSave.getIdMessage(), Status.SUCCESSFUL);
@@ -84,8 +81,8 @@ public class MessageDao implements IMessage {
 		Message message = new Message();
 
 		message.setBody(body);
-		message.setIdReceiver(receiverId);
-		message.setIdSender(senderId);
+		message.setReceiverId(receiverId);
+		message.setSenderId(senderId);
 
 
 		return message;
@@ -102,7 +99,7 @@ public class MessageDao implements IMessage {
 	@Transactional
 	public Collection<MessageToDisplay> getInformation(int senderId, int receiverId) {
 
-		try (Session session = hibernateUtil.getSessionFactory().openSession()) {
+		try (Session session = getSessionFactory().openSession()) {
 			if (!checkUser(senderId, receiverId)) {
 				return null;
 			}
@@ -114,9 +111,7 @@ public class MessageDao implements IMessage {
 			query.addEntity(MessageToDisplay.class);
 			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 
-			@SuppressWarnings("unchecked")
-			Collection<MessageToDisplay> messageToDisplays = (List<MessageToDisplay>) query.list();
-			return messageToDisplays;
+			return (List) query.list();
 		}
 	}
 
@@ -130,7 +125,7 @@ public class MessageDao implements IMessage {
 	@Override
 	@Transactional
 	public Collection<Message> getFullInformation(int senderId, int receiverId, DetachedCriteria detachedCriteria) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = getSessionFactory().openSession();
 		if (!checkUser(senderId, receiverId)) {
 			return null;
 		}
@@ -154,15 +149,12 @@ public class MessageDao implements IMessage {
 		ReturnedId returnedId;
 
 		if (!checkOneUser(idSender, idMessage)) {
-
-			returnedId = new ReturnedId(idMessage, Status.ERROR);
-
-			return returnedId;
+			return returnedId = new ReturnedId(idMessage, Status.ERROR);
 		}
 
 		returnedId = new ReturnedId(idMessage, Status.ERROR);
 
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = getSessionFactory().openSession();
 		session.beginTransaction();
 
 		Message updateTextOfMessage = (Message) session.get(Message.class, idMessage);
@@ -170,9 +162,8 @@ public class MessageDao implements IMessage {
 
 		session.update(updateTextOfMessage);
 		session.getTransaction().commit();
-
+	
 		returnedId.setStatus(Status.SUCCESSFUL);
-
 		return returnedId;
 	}
 
@@ -182,7 +173,7 @@ public class MessageDao implements IMessage {
 	 * @param idElement
 	 */
 	private boolean checkOneUser(int idUser, int idMessage) {
-		try(Session session = hibernateUtil.getSessionFactory().openSession()){
+		try(Session session = getSessionFactory().openSession()){
 		Criteria search = session.createCriteria(Message.class.getName()).add(Restrictions.eq("id", idMessage))
 				.setProjection(Projections.property("sender_id"));
 		return (int) search.uniqueResult()==idUser;
@@ -197,10 +188,10 @@ public class MessageDao implements IMessage {
 	 * @return status
 	 */
 	private boolean checkUser(int senderId, int receiverId) {
-		try(Session session = hibernateUtil.getSessionFactory().openSession()) {
+		try(Session session = getSessionFactory().openSession()) {
 			Criteria userCriteria = session.createCriteria(User.class).add(Restrictions.eq("id", senderId));
 			Criteria roomCriteria = session.createCriteria(Room.class).add(Restrictions.eq("id", receiverId));
-			return ((userCriteria.uniqueResult()!=null)&(roomCriteria.uniqueResult()!=null));
+			return ((userCriteria.uniqueResult()!=null)&&(roomCriteria.uniqueResult()!=null));
 		}
 	}
 }

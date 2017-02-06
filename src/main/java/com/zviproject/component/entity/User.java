@@ -3,6 +3,7 @@ package com.zviproject.component.entity;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "users")
@@ -28,10 +31,11 @@ public class User implements Serializable {
 	@Column(name = "access_token")
 	private String accessToken;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name="roomuser",
 		joinColumns = @JoinColumn(name="user_id", referencedColumnName="id"),
 		inverseJoinColumns = @JoinColumn(name="room_id", referencedColumnName="id"))
+	@JsonManagedReference
 	private Set<Room> rooms;
 
 	public Integer getId() {

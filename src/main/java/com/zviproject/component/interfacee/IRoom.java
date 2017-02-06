@@ -27,6 +27,6 @@ public interface IRoom {
 		 * @param id
 		 * @return List<User>
 		 */
-		public List<User> getUsersInRoom(Integer id);
+		public Room getUsersInRoom(Integer id);
 
 }

@@ -51,7 +51,7 @@ public class RoomController {
 		 */
 
 		@RequestMapping(value = "/{id}/usersInRoom", method = RequestMethod.GET)
-		public List<User> getUsersInRoom(@PathVariable("id") Integer id) {
+		public Room getUsersInRoom(@PathVariable("id") Integer id) {
 			return roomService.getUsersInRoom(id);
 
 		}		

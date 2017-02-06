@@ -21,16 +21,12 @@ public class Message implements Serializable {
 	private Integer idMessage;
 
 	@Column(name = "sender_id")
-	private Integer idSender;
+	private Integer senderId;
 
 	@Column(name = "receiver_id")
-	private Integer idReceiver;
-	
-	@Column(name = "send_time")
-	private Date sendTime;
+	private Integer receiverId;
 	
 	private String body;
-
 
 	public Integer getIdMessage() {
 		return idMessage;
@@ -40,20 +36,20 @@ public class Message implements Serializable {
 		this.idMessage = idMessage;
 	}
 
-	public int getIdSender() {
-		return idSender;
+	public Integer getSenderId() {
+		return senderId;
 	}
 
-	public void setIdSender(int idSender) {
-		this.idSender = idSender;
+	public void setSenderId(Integer senderId) {
+		this.senderId = senderId;
 	}
 
-	public int getIdReceiver() {
-		return idReceiver;
+	public Integer getReceiverId() {
+		return receiverId;
 	}
 
-	public void setIdReceiver(int idReceiver) {
-		this.idReceiver = idReceiver;
+	public void setReceiverId(Integer receiverId) {
+		this.receiverId = receiverId;
 	}
 
 	public String getBody() {
@@ -62,13 +58,5 @@ public class Message implements Serializable {
 
 	public void setBody(String body) {
 		this.body = body;
-	}
-
-	public Date getSendTime() {
-		return sendTime;
-	}
-
-	public void setSendTime(Date sendTime) {
-		this.sendTime = sendTime;
 	}
 }

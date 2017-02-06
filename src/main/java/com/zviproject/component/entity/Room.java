@@ -2,7 +2,6 @@ package com.zviproject.component.entity;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="rooms")
@@ -24,7 +25,8 @@ public class Room implements Serializable{
 	
 	private String name;
 	
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy="rooms")
+	@ManyToMany(mappedBy="rooms")
+	@JsonManagedReference
 	private List<User> users;
 	
 	public Room(){

@@ -1,10 +1,9 @@
 package com.zviproject.component.service;
 
-import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -12,18 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zviproject.component.Util.HibernateUtil;
 import com.zviproject.component.entity.ReturnedId;
 import com.zviproject.component.entity.Room;
 import com.zviproject.component.entity.Status;
 import com.zviproject.component.entity.User;
 import com.zviproject.component.interfacee.IUser;
 
+/**
+ * 
+ * @author zviproject
+ *
+ */
 @Repository
-public class UserDao implements IUser {
-
-	@Autowired
-	private HibernateUtil hibernateUtil;
+public class UserDao extends HibernateUtil implements IUser {
 
 	/**
 	 * Register new user in chat<br>
@@ -41,7 +41,7 @@ public class UserDao implements IUser {
 			return returnedId;
 		}
 
-		try (Session session = hibernateUtil.getSessionFactory().openSession()) {
+		try (Session session = getSessionFactory().openSession()) {
 			session.save(user);
 			returnedId = new ReturnedId(user.getId(), Status.SUCCESSFUL);
 			return returnedId;
@@ -60,7 +60,7 @@ public class UserDao implements IUser {
 		boolean bol=false;
 		try{
 			
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = getSessionFactory().openSession();
 		
 		Criteria criteriaUser = session.createCriteria(User.class.getName()).add(Restrictions.eq("login", login))
 				.setProjection(Projections.property("id"));
@@ -79,7 +79,7 @@ public class UserDao implements IUser {
 	@Transactional
 	public ReturnedId updateToken(String access_token, int id_user) {
 
-		try (Session session = hibernateUtil.getSessionFactory().openSession()) {
+		try (Session session = getSessionFactory().openSession()) {
 			User userUpdate = (User) session.get(User.class, id_user);
 			userUpdate.setAccessToken(access_token);
 
@@ -92,9 +92,15 @@ public class UserDao implements IUser {
 			return returnedId;
 		}
 	}
-	public Set<Room> getUserRooms(Integer roomId) {
-		try(Session session = hibernateUtil.getSessionFactory().openSession()){						
-			return session.get(User.class, roomId).getRooms();
-		}		
+
+	@Override
+	public Set<Room> getUserRooms(Integer id) {
+		try(Session session = getSessionFactory().openSession()){						
+			session.beginTransaction();
+			Set<Room> rooms = session.get(User.class, id).getRooms();
+			Hibernate.initialize(new Room());
+			Hibernate.initialize(rooms);
+			return rooms;
+		}	
 	}
 }

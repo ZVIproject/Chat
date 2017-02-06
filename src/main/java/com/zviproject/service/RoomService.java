@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zviproject.component.entity.ReturnedId;
 import com.zviproject.component.entity.Room;
@@ -16,6 +17,7 @@ import com.zviproject.component.interfacee.IRoom;
  */
 
 @Service
+@Transactional
 public class RoomService {
 	
 	@Autowired
@@ -38,7 +40,7 @@ public class RoomService {
 	 * @param id
 	 * @return List<User>
 	 */
-	public List<User> getUsersInRoom(Integer id){
+	public Room getUsersInRoom(Integer id){
 		return iRoom.getUsersInRoom(id);		
 	}
 

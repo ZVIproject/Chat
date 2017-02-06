@@ -63,11 +63,11 @@ public class MessageController {
 	 * @param receiverId
 	 * @return Collection<MessageToDisplay>
 	 */
-	@RequestMapping(value = "/{sender_id}/{receiver_id}/information", method = RequestMethod.GET)
-	public Collection<MessageToDisplay> getInformation(@PathVariable("sender_id") int sender_id,
-			@PathVariable("receiver_id") int receiver_id) {
+	@RequestMapping(value = "/{senderId}/{receiverId}/information", method = RequestMethod.GET)
+	public Collection<MessageToDisplay> getInformation(@PathVariable("senderId") int senderId,
+			@PathVariable("receiverId") int receiverId) {
 
-		return messageService.getInformation(sender_id, receiver_id);
+		return messageService.getInformation(senderId, receiverId);
 	}
 
 	/**
@@ -78,11 +78,11 @@ public class MessageController {
 	 * @param receiverId
 	 * @return Collection<Message>
 	 */
-	@RequestMapping(value = "/{sender_id}/{receiver_id}/informationFull", method = RequestMethod.GET)
-	public Collection<Message> getFullInformation(@PathVariable("sender_id") int sender_id,
-			@PathVariable("receiver_id") int receiver_id) {
-		DetachedCriteria dc = createDetachedCriteria(sender_id, receiver_id);
-		return messageService.getFullInformation(sender_id, receiver_id, dc);
+	@RequestMapping(value = "/{senderId}/{receiverId}/informationFull", method = RequestMethod.GET)
+	public Collection<Message> getFullInformation(@PathVariable("senderId") int senderId,
+			@PathVariable("receiverId") int receiverId) {
+		DetachedCriteria dc = createDetachedCriteria(senderId, receiverId);
+		return messageService.getFullInformation(senderId, receiverId, dc);
 	}
 
 	/**
@@ -94,9 +94,9 @@ public class MessageController {
 	 * 
 	 * @return ReturnedId
 	 */
-	@RequestMapping(value = "/update_message/{sender_id}/{idMessage}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/update_message/{sender_id}/{id}", method = RequestMethod.PUT)
 	public ReturnedId updateTextOfMessageById(@PathVariable("sender_id") int idSender,
-			@PathVariable("idMessage") int idMessage, @RequestBody String textMessage) {
+			@PathVariable("id") int idMessage, @RequestBody String textMessage) {
 		return messageService.updateTextOfMessageById(idSender, idMessage, textMessage);
 	}
 

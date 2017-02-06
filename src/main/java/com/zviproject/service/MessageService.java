@@ -65,8 +65,8 @@ public class MessageService {
 	 * 
 	 * @return ReturnedId
 	 */
-	public ReturnedId updateTextOfMessageById(int idSender, int idMessage, String textMessage) {
-		return iMessage.updateTextOfMessageById(idSender, idMessage, textMessage);
+	public ReturnedId updateTextOfMessageById(int senderId, int messageId, String textMessage) {
+		return iMessage.updateTextOfMessageById(senderId, messageId, textMessage);
 	}
 
 }
