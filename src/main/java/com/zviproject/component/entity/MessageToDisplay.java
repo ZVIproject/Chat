@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityResult;
 import javax.persistence.FieldResult;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SqlResultSetMapping;
 
@@ -23,24 +25,20 @@ import org.springframework.social.facebook.api.impl.FacebookTemplate;
  *
  */
 @SqlResultSetMapping(name = "MessageToDisplay", entities = {
-		@EntityResult(entityClass = MessageToDisplay.class, fields = { @FieldResult(name = "id", column = "id_message"),
-				@FieldResult(name = "timeMessage", column = "send_time"),
+		@EntityResult(entityClass = MessageToDisplay.class, fields = { @FieldResult(name = "id", column = "id"),
 				@FieldResult(name = "senderTok", column = "senderTok"),
 				@FieldResult(name = "textMessage", column = "body") }) })
 
 public class MessageToDisplay {
 
 	@Id
-	@Column(name = "id_message")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name = "body")
 	private String textMessage;
 
 	private String senderTok;
-
-	@Column(name = "send_time")
-	private Date timeMessage;
 
 	/**
 	 * Working with FaceBook API
@@ -58,14 +56,6 @@ public class MessageToDisplay {
 		this.textMessage = textMessage;
 	}
 
-	public Date gettimeMessage() {
-		return timeMessage;
-	}
-
-	public void settimeMessage(Date timeMessage) {
-		this.timeMessage = timeMessage;
-	}
-
 	public void setToken(String senderTok) {
 		this.senderTok = senderTok;
 	}
@@ -74,9 +64,7 @@ public class MessageToDisplay {
 		Facebook facebook;
 		facebook = new FacebookTemplate(senderTok, "me");
 		User me = facebook.userOperations().getUserProfile();
-		String name = me.getName();
-
-		return name;
+		return me.getName();
 	}
 
 }

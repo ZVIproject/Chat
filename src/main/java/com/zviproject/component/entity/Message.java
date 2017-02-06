@@ -17,25 +17,16 @@ public class Message implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_message")
+	@Column(name = "id")
 	private Integer idMessage;
 
-	@Column(name = "id_sender")
-	private Integer idSender;
+	@Column(name = "sender_id")
+	private Integer senderId;
 
-	@Column(name = "id_receiver")
-	private Integer idReceiver;
-
-	@Column(name = "send_time")
-	private Date sendTime;
-
+	@Column(name = "receiver_id")
+	private Integer receiverId;
+	
 	private String body;
-
-	@Column(name = "date_time")
-	private Date dateTime;
-
-	@Column(name = "time_stamp")
-	private Date timeStamp;
 
 	public Integer getIdMessage() {
 		return idMessage;
@@ -45,28 +36,20 @@ public class Message implements Serializable {
 		this.idMessage = idMessage;
 	}
 
-	public int getIdSender() {
-		return idSender;
+	public Integer getSenderId() {
+		return senderId;
 	}
 
-	public void setIdSender(int idSender) {
-		this.idSender = idSender;
+	public void setSenderId(Integer senderId) {
+		this.senderId = senderId;
 	}
 
-	public int getIdReceiver() {
-		return idReceiver;
+	public Integer getReceiverId() {
+		return receiverId;
 	}
 
-	public void setIdReceiver(int idReceiver) {
-		this.idReceiver = idReceiver;
-	}
-
-	public Date getSendTime() {
-		return sendTime;
-	}
-
-	public void setSendTime(Date sendTime) {
-		this.sendTime = sendTime;
+	public void setReceiverId(Integer receiverId) {
+		this.receiverId = receiverId;
 	}
 
 	public String getBody() {
@@ -76,21 +59,4 @@ public class Message implements Serializable {
 	public void setBody(String body) {
 		this.body = body;
 	}
-
-	public Date getDateTime() {
-		return dateTime;
-	}
-
-	public void setDateTime(Date dateTime) {
-		this.dateTime = dateTime;
-	}
-
-	public Date getTimeStamp() {
-		return timeStamp;
-	}
-
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
 }

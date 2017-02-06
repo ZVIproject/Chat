@@ -1,8 +1,9 @@
 package com.zviproject.component.service;
 
-import java.util.Date;
+import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -10,17 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zviproject.component.Util.HibernateUtil;
 import com.zviproject.component.entity.ReturnedId;
+import com.zviproject.component.entity.Room;
 import com.zviproject.component.entity.Status;
 import com.zviproject.component.entity.User;
 import com.zviproject.component.interfacee.IUser;
 
+/**
+ * 
+ * @author zviproject
+ *
+ */
 @Repository
-public class UserDao implements IUser {
-
-	@Autowired
-	private HibernateUtil hibernateUtil;
+public class UserDao extends HibernateUtil implements IUser {
 
 	/**
 	 * Register new user in chat<br>
@@ -33,24 +36,15 @@ public class UserDao implements IUser {
 	@Transactional
 	public ReturnedId registerUser(User user) {
 		ReturnedId returnedId;
-		if (!checkRegisterUser(user.getLogin())) {
-			returnedId = new ReturnedId(user.getidUser(), Status.ERROR);
+		if (checkRegisterUser(user.getLogin())!=false) {
+			returnedId = new ReturnedId(0, Status.ERROR);
 			return returnedId;
 		}
 
-		Session session = hibernateUtil.getSessionFactory().openSession();
-
-		try {
-
-			Date createTime = new Date();
-			user.setdateTime(createTime);
+		try (Session session = getSessionFactory().openSession()) {
 			session.save(user);
-
-			returnedId = new ReturnedId(user.getidUser(), Status.SUCCESSFUL);
+			returnedId = new ReturnedId(user.getId(), Status.SUCCESSFUL);
 			return returnedId;
-
-		} finally {
-			session.close();
 		}
 
 	}
@@ -63,10 +57,19 @@ public class UserDao implements IUser {
 	 * @return exist
 	 */
 	private boolean checkRegisterUser(String login) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		boolean bol=false;
+		try{
+			
+		Session session = getSessionFactory().openSession();
+		
 		Criteria criteriaUser = session.createCriteria(User.class.getName()).add(Restrictions.eq("login", login))
 				.setProjection(Projections.property("id"));
-		return criteriaUser.uniqueResult() == null;
+		int checkId = (int)criteriaUser.uniqueResult() ;
+		return bol=true;
+		}catch (NullPointerException e) {
+			return bol;
+		}
+		
 	}
 
 	/**
@@ -75,28 +78,29 @@ public class UserDao implements IUser {
 	@Override
 	@Transactional
 	public ReturnedId updateToken(String access_token, int id_user) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
 
-		try {
+		try (Session session = getSessionFactory().openSession()) {
 			User userUpdate = (User) session.get(User.class, id_user);
-			userUpdate.setaccessToken(access_token);
+			userUpdate.setAccessToken(access_token);
 
 			session.beginTransaction();
 			session.update(userUpdate);
-
-			Date timeUpdate = new Date();
-			userUpdate.settimeStamp(timeUpdate);
-
 			session.getTransaction().commit();
 
 			ReturnedId returnedId = new ReturnedId(id_user, Status.SUCCESSFUL);
 
 			return returnedId;
-
-		} finally {
-			session.close();
 		}
-
 	}
 
+	@Override
+	public Set<Room> getUserRooms(Integer id) {
+		try(Session session = getSessionFactory().openSession()){						
+			session.beginTransaction();
+			Set<Room> rooms = session.get(User.class, id).getRooms();
+			Hibernate.initialize(new Room());
+			Hibernate.initialize(rooms);
+			return rooms;
+		}	
+	}
 }

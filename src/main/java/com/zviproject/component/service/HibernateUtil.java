@@ -1,4 +1,4 @@
-package com.zviproject.component.Util;
+package com.zviproject.component.service;
 
 import javax.annotation.PostConstruct;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * Working with session for access to db
  */
 @Component
-public class HibernateUtil {
+public abstract class HibernateUtil {
 
 	private SessionFactory sessionFactory;
 

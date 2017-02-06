@@ -29,8 +29,8 @@ public class MessageController {
 	/**
 	 * Request for return history of message
 	 * 
-	 * @param name1
-	 * @param name2
+	 * @param id sender
+	 * @param id room
 	 * @return DetachedCriteria
 	 */
 	public DetachedCriteria createDetachedCriteria(int senderId, int receiverId) {
@@ -44,22 +44,23 @@ public class MessageController {
 	}
 
 	/**
-	 * Method for sending messages between users
+	 * Method for sending messages
 	 * 
 	 * @param senderId
 	 * @param receiverId
 	 * @return int
 	 */
-	@RequestMapping(value = "/{senderId}/{receiverId}", method = RequestMethod.POST)
-	public ReturnedId sendMessage(@PathVariable("senderId") int senderId, @PathVariable("receiverId") int receiverId,
-			@RequestBody String login) {
-		return messageService.sendMessage(senderId, receiverId, login);
+	@RequestMapping(value = "/{sender_id}/{receiver_id}", method = RequestMethod.POST)
+	public ReturnedId sendMessage(@PathVariable("sender_id") int senderId, @PathVariable("receiver_id") int receiverId,
+			@RequestBody String body) {
+		return messageService.sendMessage(senderId, receiverId, body);
 	}
 
 	/**
-	 * Get information about correspondence between users in pages
+	 * Get information about correspondence of user in room by pages
 	 * 
-	 * @param page
+	 * @param senderId
+	 * @param receiverId
 	 * @return Collection<MessageToDisplay>
 	 */
 	@RequestMapping(value = "/{senderId}/{receiverId}/information", method = RequestMethod.GET)
@@ -93,9 +94,9 @@ public class MessageController {
 	 * 
 	 * @return ReturnedId
 	 */
-	@RequestMapping(value = "/update_message/{idSender}/{idMessage}", method = RequestMethod.PUT)
-	public ReturnedId updateTextOfMessageById(@PathVariable("idSender") int idSender,
-			@PathVariable("idMessage") int idMessage, @RequestBody String textMessage) {
+	@RequestMapping(value = "/update_message/{sender_id}/{id}", method = RequestMethod.PUT)
+	public ReturnedId updateTextOfMessageById(@PathVariable("sender_id") int idSender,
+			@PathVariable("id") int idMessage, @RequestBody String textMessage) {
 		return messageService.updateTextOfMessageById(idSender, idMessage, textMessage);
 	}
 

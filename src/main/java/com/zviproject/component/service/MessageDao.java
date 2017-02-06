@@ -1,6 +1,5 @@
 package com.zviproject.component.service;
 
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -14,14 +13,16 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zviproject.component.Util.HibernateUtil;
 import com.zviproject.component.entity.Message;
 import com.zviproject.component.entity.MessageToDisplay;
 import com.zviproject.component.entity.ReturnedId;
+import com.zviproject.component.entity.Room;
 import com.zviproject.component.entity.Status;
+import com.zviproject.component.entity.User;
 import com.zviproject.component.interfacee.IMessage;
 
 /**
@@ -30,20 +31,16 @@ import com.zviproject.component.interfacee.IMessage;
  *
  */
 @Repository
-public class MessageDao implements IMessage {
+@Qualifier
+public class MessageDao extends HibernateUtil implements IMessage {
 
 	/**
 	 * Get short information about message
 	 */
-	private static final String SQL_INFORMATION_ABOUT_USERS = "SELECT m.body, m.send_time, m.id_message, s.access_token AS senderTok"
+	private static final String SQL_INFORMATION_ABOUT_USERS = "SELECT m.body, m.send_time, m.id, s.access_token AS senderTok"
 			+ " FROM messages AS m"
-			+ " LEFT JOIN users AS r ON r.id_user=m.id_receiver LEFT JOIN users AS s ON s.id_user = m.id_sender"
-			+ " WHERE (m.id_sender = :senderId AND m.id_receiver=:receiverId) OR (m.id_sender=:receiverId AND m.id_receiver=:senderId)";
-
-	private static final String SQL_COUNT_USERS = "SELECT COUNT(id_user) FROM users WHERE users.id_user in (:senderId, :receiverId) LIMIT 2";
-
-	@Autowired
-	private HibernateUtil hibernateUtil;
+			+ " LEFT JOIN rooms AS r ON r.id=m.receiver_id LEFT JOIN users AS s ON s.id= m.sender_id"
+			+ " WHERE (m.sender_id = :senderId AND m.receiver_id=:receiverId)";
 
 	/**
 	 * Printing information in stack trace
@@ -61,56 +58,48 @@ public class MessageDao implements IMessage {
 	@Override
 	@Transactional
 	public ReturnedId saveMessage(int senderId, int receiverId, String body) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
 		ReturnedId returnedId;
 
-		try {
+		try(Session session = getSessionFactory().openSession()) {
 
 			if (!checkUser(senderId, receiverId)) {
-				returnedId = new ReturnedId(0, Status.ERROR);
-				return returnedId;
+				return new ReturnedId(0, Status.ERROR);
 			}
 
 			Message messageForSave = prepareMessageToSave(senderId, receiverId, body);
-
 			session.save(messageForSave);
 
 			returnedId = new ReturnedId(messageForSave.getIdMessage(), Status.SUCCESSFUL);
 
 			log.info(String.format("Message have id ****** %d ******", messageForSave.getIdMessage()));
-		} finally {
-			session.close();
 		}
 
 		return returnedId;
 	}
 
 	private Message prepareMessageToSave(int senderId, int receiverId, String body) {
-		Date sendTimeMessage = new Date();
-
 		Message message = new Message();
 
 		message.setBody(body);
-		message.setIdSender(receiverId);
-		message.setIdSender(senderId);
-		message.setSendTime(sendTimeMessage);
+		message.setReceiverId(receiverId);
+		message.setSenderId(senderId);
+
 
 		return message;
 	}
 
 	/**
-	 * Get information about correspondence between users in pages
+	 * Get information about correspondence of user in room
 	 * 
-	 * @param page
+	 * @param id sender(user)
+	 * @param id receiver(room)
 	 * @return Collection<MessageToDisplay>
-	 * @throws Exception
 	 */
 	@Override
 	@Transactional
 	public Collection<MessageToDisplay> getInformation(int senderId, int receiverId) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
 
-		try {
+		try (Session session = getSessionFactory().openSession()) {
 			if (!checkUser(senderId, receiverId)) {
 				return null;
 			}
@@ -122,27 +111,21 @@ public class MessageDao implements IMessage {
 			query.addEntity(MessageToDisplay.class);
 			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 
-			Collection<MessageToDisplay> messageToDisplays = (List<MessageToDisplay>) query.list();
-			return messageToDisplays;
-		} finally {
-			session.close();
+			return (List) query.list();
 		}
-
 	}
 
 	/**
-	 * Get all information about correspondence between users
+	 * Get information about correspondence of user in room
 	 * 
-	 * @param dc
-	 *            - get information about message
-	 * @param senderId
-	 * @param receiverId
-	 * @return Collection<Message>
+	 * @param id sender(user)
+	 * @param id receiver(room)
+	 * @return Collection<MessageToDisplay>
 	 */
 	@Override
 	@Transactional
 	public Collection<Message> getFullInformation(int senderId, int receiverId, DetachedCriteria detachedCriteria) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = getSessionFactory().openSession();
 		if (!checkUser(senderId, receiverId)) {
 			return null;
 		}
@@ -166,28 +149,21 @@ public class MessageDao implements IMessage {
 		ReturnedId returnedId;
 
 		if (!checkOneUser(idSender, idMessage)) {
-
-			returnedId = new ReturnedId(idMessage, Status.ERROR);
-
-			return returnedId;
+			return returnedId = new ReturnedId(idMessage, Status.ERROR);
 		}
 
 		returnedId = new ReturnedId(idMessage, Status.ERROR);
 
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		Session session = getSessionFactory().openSession();
 		session.beginTransaction();
 
 		Message updateTextOfMessage = (Message) session.get(Message.class, idMessage);
 		updateTextOfMessage.setBody(textMessage);
 
-		Date timeUpdate = new Date();
-		updateTextOfMessage.setTimeStamp(timeUpdate);
-
 		session.update(updateTextOfMessage);
 		session.getTransaction().commit();
-
+	
 		returnedId.setStatus(Status.SUCCESSFUL);
-
 		return returnedId;
 	}
 
@@ -197,20 +173,12 @@ public class MessageDao implements IMessage {
 	 * @param idElement
 	 */
 	private boolean checkOneUser(int idUser, int idMessage) {
-		Session session = hibernateUtil.getSessionFactory().openSession();
+		try(Session session = getSessionFactory().openSession()){
+		Criteria search = session.createCriteria(Message.class.getName()).add(Restrictions.eq("id", idMessage))
+				.setProjection(Projections.property("sender_id"));
+		return (int) search.uniqueResult()==idUser;
 
-		boolean exist = false;
-
-		Criteria search = session.createCriteria(Message.class.getName()).add(Restrictions.eq("idMessage", idMessage))
-				.setProjection(Projections.property("idSender"));
-
-		int checkUserid = (int) search.uniqueResult();
-
-		if (checkUserid == idUser) {
-			exist = true;
 		}
-
-		return exist;
 	}
 
 	/**
@@ -220,24 +188,10 @@ public class MessageDao implements IMessage {
 	 * @return status
 	 */
 	private boolean checkUser(int senderId, int receiverId) {
-		boolean exist = false;
-		Session session = hibernateUtil.getSessionFactory().openSession();
-		try {
-			SQLQuery query = session.createSQLQuery(SQL_COUNT_USERS);
-			query.setParameter("senderId", senderId);
-			query.setParameter("receiverId", receiverId);
-
-			Integer count = ((BigInteger) query.uniqueResult()).intValue();
-			if (count == 2) {
-				exist = true;
-			}
-
-			return exist;
-
-		} finally {
-			session.close();
+		try(Session session = getSessionFactory().openSession()) {
+			Criteria userCriteria = session.createCriteria(User.class).add(Restrictions.eq("id", senderId));
+			Criteria roomCriteria = session.createCriteria(Room.class).add(Restrictions.eq("id", receiverId));
+			return ((userCriteria.uniqueResult()!=null)&&(roomCriteria.uniqueResult()!=null));
 		}
-
 	}
-
 }

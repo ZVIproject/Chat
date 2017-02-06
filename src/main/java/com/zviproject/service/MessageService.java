@@ -24,9 +24,9 @@ public class MessageService {
 	 * @param login
 	 * @return int
 	 */
-	public ReturnedId sendMessage(int senderId, int receiverId, String login) {
+	public ReturnedId sendMessage(int senderId, int receiverId, String body) {
 
-		return iMessage.saveMessage(senderId, receiverId, login);
+		return iMessage.saveMessage(senderId, receiverId, body);
 	}
 
 	/**
@@ -65,8 +65,8 @@ public class MessageService {
 	 * 
 	 * @return ReturnedId
 	 */
-	public ReturnedId updateTextOfMessageById(int idSender, int idMessage, String textMessage) {
-		return iMessage.updateTextOfMessageById(idSender, idMessage, textMessage);
+	public ReturnedId updateTextOfMessageById(int senderId, int messageId, String textMessage) {
+		return iMessage.updateTextOfMessageById(senderId, messageId, textMessage);
 	}
 
 }
