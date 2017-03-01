@@ -21,52 +21,52 @@ public class Message implements Serializable {
 	private Integer idMessage;
 
 	@Column(name = "id_sender")
-	private int idSender;
+	private int id_sender;
 
 	@Column(name = "id_receiver")
-	private int idReceiver;
+	private int id_receiver;
 
 	@Column(name = "send_time")
-	private Date sendTime;
+	private Date send_time;
 
 	private String body;
 
 	@Column(name = "date_time")
-	private Date dateTime;
+	private Date date_time;
 
 	@Column(name = "time_stamp")
-	private Date timeStamp;
+	private Date time_stamp;
 
-	public Integer getidMessage() {
+	public Integer getIdMessage() {
 		return idMessage;
 	}
 
-	public void setidMessage(Integer idMessage) {
+	public void setIdMessage(Integer idMessage) {
 		this.idMessage = idMessage;
 	}
 
-	public int getidSender() {
-		return idSender;
+	public int getId_sender() {
+		return id_sender;
 	}
 
-	public void setidSender(int idSender) {
-		this.idSender = idSender;
+	public void setId_sender(int id_sender) {
+		this.id_sender = id_sender;
 	}
 
-	public int getidReceiver() {
-		return idReceiver;
+	public int getId_receiver() {
+		return id_receiver;
 	}
 
-	public void setidReceiver(int idReceiver) {
-		this.idReceiver = idReceiver;
+	public void setId_receiver(int id_receiver) {
+		this.id_receiver = id_receiver;
 	}
 
-	public Date getsendTime() {
-		return sendTime;
+	public Date getSend_time() {
+		return send_time;
 	}
 
-	public void setsendTime(Date sendTime) {
-		this.sendTime = sendTime;
+	public void setSend_time(Date send_time) {
+		this.send_time = send_time;
 	}
 
 	public String getBody() {
@@ -77,24 +77,20 @@ public class Message implements Serializable {
 		this.body = body;
 	}
 
-	public Date getdateTime() {
-		return dateTime;
+	public Date getDate_time() {
+		return date_time;
 	}
 
-	public void setdateTime(Date dateTime) {
-		this.dateTime = dateTime;
+	public void setDate_time(Date date_time) {
+		this.date_time = date_time;
 	}
 
-	public Date gettimeStamp() {
-		return timeStamp;
+	public Date getTime_stamp() {
+		return time_stamp;
 	}
 
-	public void settimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public void setTime_stamp(Date time_stamp) {
+		this.time_stamp = time_stamp;
 	}
 
 }
