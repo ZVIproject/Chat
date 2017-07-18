@@ -9,13 +9,12 @@ import org.springframework.stereotype.Service;
 import com.zviproject.component.entity.Message;
 import com.zviproject.component.entity.MessageToDisplay;
 import com.zviproject.component.entity.ReturnedId;
-import com.zviproject.component.entity.User;
-import com.zviproject.component.interfacee.IChat;
+import com.zviproject.component.interfacee.IMessage;
 
 @Service
-public class ChatService {
+public class MessageService {
 	@Autowired
-	IChat iChat;
+	IMessage iMessage;
 
 	/**
 	 * Method for sending message between users
@@ -27,7 +26,7 @@ public class ChatService {
 	 */
 	public ReturnedId sendMessage(int senderId, int receiverId, String login) {
 
-		return iChat.sendMessage(senderId, receiverId, login);
+		return iMessage.saveMessage(senderId, receiverId, login);
 	}
 
 	/**
@@ -40,19 +39,8 @@ public class ChatService {
 	 * @return Collection<Message>
 	 */
 	public Collection<MessageToDisplay> getInformation(int senderId, int receiverId) {
-		return iChat.getInformation(senderId, receiverId);
+		return iMessage.getInformation(senderId, receiverId);
 
-	}
-
-	/**
-	 * Register new user in chat<br>
-	 * Return information for user and <b>ID</b>.
-	 * 
-	 * @param user
-	 * @return String
-	 */
-	public ReturnedId registerUser(User user) {
-		return iChat.registerUser(user);
 	}
 
 	/**
@@ -65,16 +53,20 @@ public class ChatService {
 	 * @throws Exception
 	 */
 	public Collection<Message> getFullInformation(int senderId, int receiverId, DetachedCriteria dc) {
-		return iChat.getFullInformation(senderId, receiverId, dc);
+		return iMessage.getFullInformation(senderId, receiverId, dc);
 	}
 
 	/**
-	 * Update token for user
+	 * Update text of message by id in DB
 	 * 
-	 * @param token
+	 * @param idSender
+	 * @param idMessage
+	 * @param textMessage
+	 * 
+	 * @return ReturnedId
 	 */
-	public ReturnedId updateToken(String token, int id) {
-		return iChat.updateToken(token, id);
+	public ReturnedId updateTextOfMessageById(int idSender, int idMessage, String textMessage) {
+		return iMessage.updateTextOfMessageById(idSender, idMessage, textMessage);
 	}
 
 }

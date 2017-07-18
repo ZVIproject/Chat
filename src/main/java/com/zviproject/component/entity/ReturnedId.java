@@ -1,22 +1,32 @@
 package com.zviproject.component.entity;
 
-public final class ReturnedId {
+public class ReturnedId {
 	private int id;
-	private String status;
+
+	private Status status;
 
 	public int getId() {
 		return id;
+	}
+
+	// public ReturnedId() {
+	// }
+
+	public ReturnedId(int id, Status status) {
+		this.id = id;
+		this.status = status;
 	}
 
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	public String getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
+
 }
